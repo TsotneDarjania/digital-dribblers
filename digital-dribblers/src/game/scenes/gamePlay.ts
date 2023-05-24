@@ -1,9 +1,12 @@
+import { Team } from "../components/team";
 import { Footballer } from "../gameObjects/footballler";
-import { Stadium } from "../utils/drawStadium";
+import { Stadium } from "../gameObjects/stadium";
 
 export class GamePlay extends Phaser.Scene {
   screenWidth!: number;
   screenHeight!: number;
+
+  stadium!: Stadium;
 
   constructor() {
     super("GamePlay");
@@ -15,11 +18,17 @@ export class GamePlay extends Phaser.Scene {
 
     this.drawStadium();
 
-    new Footballer(this, 100, 100, 0xc322e3);
-    new Footballer(this, 300, 500, 0xfa4f19);
+    // new Footballer(this, 200, 400, { key: "georgia-flag" });
+    new Team(this, 0, 0, { formation: [4, 4, 2], flag: "georgia-flag" }, true);
   }
 
   drawStadium() {
-    new Stadium(this, this.screenWidth / 2, this.screenHeight / 2, 800, 400);
+    this.stadium = new Stadium(
+      this,
+      this.screenWidth / 2,
+      this.screenHeight / 2,
+      800,
+      400
+    );
   }
 }

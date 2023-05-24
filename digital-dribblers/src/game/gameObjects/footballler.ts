@@ -1,25 +1,30 @@
+import { calculatePercentage } from "../../helper/tatukaMath";
+import { FootbalerData } from "../data/footballersData";
 import { GamePlay } from "../scenes/gamePlay";
 
-export class Footballer {
-  radius = 20;
-
+export class Footballer extends Phaser.GameObjects.Container {
   constructor(
     public scene: GamePlay,
     public x: number,
     public y: number,
-    public color: number
+    public playerData: FootbalerData
   ) {
+    super(scene, x, y);
+    this.scene.add.existing(this);
     this.init();
   }
 
   init() {
-    this.createShape();
+    this.addImage();
   }
 
-  createShape() {
-    const graphics = this.scene.add.graphics();
-
-    graphics.fillStyle(this.color, 1);
-    graphics.fillCircle(this.x, this.y, this.radius);
+  addImage() {
+    const image = this.scene.add
+      .image(0, 0, this.playerData.key)
+      .setDisplaySize(
+        calculatePercentage(4, this.scene.stadium.stadiumWidth),
+        calculatePercentage(4, this.scene.stadium.stadiumWidth)
+      );
+    this.add(image);
   }
 }
