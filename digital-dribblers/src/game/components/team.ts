@@ -1,12 +1,13 @@
-import { calculatePercentage } from "../../helper/tatukaMath";
 import { TeamData } from "../data/teamsData";
-import { Footballer } from "../gameObjects/footballler";
 import { GamePlay } from "../scenes/gamePlay";
+import { FootbollersColumn } from "./footballersColumn";
 
 export class Team extends Phaser.GameObjects.Container {
-  defenceColumn!: Phaser.GameObjects.Container;
-  centereColumn!: Phaser.GameObjects.Container;
-  offenceColumn!: Phaser.GameObjects.Container;
+  defenceColumn!: FootbollersColumn;
+  centerColumn!: FootbollersColumn;
+  offenceColumn!: FootbollersColumn;
+
+  columnMotionDistance!: number;
 
   constructor(
     public scene: GamePlay,
@@ -22,54 +23,89 @@ export class Team extends Phaser.GameObjects.Container {
   }
 
   init() {
-    this.defenceColumn = this.scene.add.container(0, 0);
-    this.centereColumn = this.scene.add.container(0, 0);
-    this.offenceColumn = this.scene.add.container(0, 0);
-
     this.addFootballers();
+    this.calculateColumnMotionDistance();
+
+    this.startPlay();
   }
 
-  motionColumn(column: Phaser.GameObjects.Container) {
-    // this.scene.tweens.add({
-    //     targets : column,
-    //     y :
-    // })
+  startPlay() {
+    this.defenceColumn.startMove(
+      1,
+      this.defenceColumn.y - this.columnMotionDistance,
+      this.defenceColumn.y + this.columnMotionDistance
+    );
+    this.centerColumn.startMove(
+      1,
+      this.centerColumn.y - this.columnMotionDistance,
+      this.centerColumn.y + this.columnMotionDistance
+    );
+    this.offenceColumn.startMove(
+      1,
+      this.offenceColumn.y - this.columnMotionDistance,
+      this.offenceColumn.y + this.columnMotionDistance
+    );
+  }
+
+  calculateColumnMotionDistance() {
+    let maxColumn = this.defenceColumn;
+    const allColumns = [
+      this.defenceColumn,
+      this.centerColumn,
+      this.offenceColumn,
+    ];
+
+    for (let i = 0; i < allColumns.length; i++) {
+      if (allColumns[i].getAll().length >= maxColumn.getAll().length) {
+        maxColumn = allColumns[i];
+        const padding =
+          this.scene.stadium.stadiumHeight /
+          (allColumns[i].footballersNumber + 1);
+        this.columnMotionDistance =
+          padding - allColumns[i].footballers[0].getBounds().height / 2;
+      }
+    }
   }
 
   addFootballers() {
     if (this.isGuest) {
-      this.addColumn(this.teamData.formation[0], this.defenceColumn, 85);
-      this.addColumn(this.teamData.formation[1], this.centereColumn, 55);
-      this.addColumn(this.teamData.formation[2], this.offenceColumn, 25);
+      this.defenceColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[0],
+        85,
+        this.teamData.flag
+      );
+      this.centerColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[1],
+        55,
+        this.teamData.flag
+      );
+      this.offenceColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[2],
+        25,
+        this.teamData.flag
+      );
     } else {
-      this.addColumn(this.teamData.formation[0], this.defenceColumn, 15);
-      this.addColumn(this.teamData.formation[1], this.centereColumn, 45);
-      this.addColumn(this.teamData.formation[2], this.offenceColumn, 75);
-    }
-  }
-
-  addColumn(
-    footballers: number,
-    container: Phaser.GameObjects.Container,
-    percentFromLeft: number
-  ) {
-    const stadiumTop_y =
-      this.scene.stadium.y - this.scene.stadium.stadiumHeight / 2;
-    const stadiumLeft_x =
-      this.scene.stadium.x - this.scene.stadium.stadiumWidth / 2;
-    const padding = this.scene.stadium.stadiumHeight / (footballers + 1);
-    const position_x =
-      stadiumLeft_x +
-      calculatePercentage(percentFromLeft, this.scene.stadium.stadiumWidth);
-
-    let position_y = stadiumTop_y + padding;
-
-    for (let i = 0; i < footballers; i++) {
-      const footballer = new Footballer(this.scene, position_x, position_y, {
-        key: this.teamData.flag,
-      });
-      position_y += padding;
-      container.add(footballer);
+      this.defenceColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[0],
+        15,
+        this.teamData.flag
+      );
+      this.centerColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[1],
+        45,
+        this.teamData.flag
+      );
+      this.offenceColumn = new FootbollersColumn(
+        this.scene,
+        this.teamData.formation[2],
+        75,
+        this.teamData.flag
+      );
     }
   }
 }

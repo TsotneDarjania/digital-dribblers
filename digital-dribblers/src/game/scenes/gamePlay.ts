@@ -17,9 +17,7 @@ export class GamePlay extends Phaser.Scene {
     this.screenHeight = this.game.canvas.height;
 
     this.drawStadium();
-
-    // new Footballer(this, 200, 400, { key: "georgia-flag" });
-    new Team(this, 0, 0, { formation: [4, 4, 2], flag: "georgia-flag" }, true);
+    new Team(this, 0, 0, { formation: [5, 4, 2], flag: "georgia-flag" }, false);
   }
 
   drawStadium() {
