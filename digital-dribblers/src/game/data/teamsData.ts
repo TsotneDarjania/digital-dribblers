@@ -10,7 +10,7 @@ export const teamsData = {
 
 export interface TeamsData {
   nations: {
-    georgia: {
+    gecleorgia: {
       flagKey: string;
       footballers: {};
     };
@@ -18,6 +18,6 @@ export interface TeamsData {
 }
 
 export interface TeamData {
-  formation: [4, 4, 2];
-  flag: "georgia-flag";
+  formation: Array<number>;
+  flag: string;
 }

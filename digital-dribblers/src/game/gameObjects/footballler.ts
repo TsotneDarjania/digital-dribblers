@@ -2,29 +2,52 @@ import { calculatePercentage } from "../../helper/tatukaMath";
 import { FootbalerData } from "../data/footballersData";
 import { GamePlay } from "../scenes/gamePlay";
 
-export class Footballer extends Phaser.GameObjects.Container {
+const combinations = {
+  shortPass: {
+    goalKeeper: "defender",
+    defender: "center",
+    center: "forward",
+    forward: "shoot",
+  },
+  longPass: {
+    goalKeeper: "defender",
+    defender: "center",
+    center: "forward",
+    forward: "shoot",
+  },
+};
+
+export class Footballer extends Phaser.Physics.Arcade.Image {
+  playerPosition!: string;
+
   constructor(
     public scene: GamePlay,
     public x: number,
     public y: number,
     public playerData: FootbalerData
   ) {
-    super(scene, x, y);
+    super(scene, x, y, playerData.key);
+    this.scene.physics.add.existing(this);
     this.scene.add.existing(this);
     this.init();
   }
 
   init() {
-    this.addImage();
+    this.playerPosition = this.playerData.playerPosition;
+    this.addCircleCollider();
   }
 
-  addImage() {
-    const image = this.scene.add
-      .image(0, 0, this.playerData.key)
-      .setDisplaySize(
-        calculatePercentage(4, this.scene.stadium.stadiumWidth),
-        calculatePercentage(4, this.scene.stadium.stadiumWidth)
-      );
-    this.add(image);
+  addCircleCollider() {
+    this.setCircle(
+      calculatePercentage(40, this.width),
+      calculatePercentage(10, this.width),
+      calculatePercentage(10, this.width)
+    );
+    this.setImmovable(true);
+  }
+
+  selectNextPlayerPositionForPass() {
+    //@ts-ignore
+    return combinations.shortPass[this.playerPosition];
   }
 }

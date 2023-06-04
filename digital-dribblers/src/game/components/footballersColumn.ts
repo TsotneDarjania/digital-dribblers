@@ -12,7 +12,8 @@ export class FootbollersColumn extends Phaser.GameObjects.Container {
     public scene: GamePlay,
     public footballersNumber: number,
     public percentFromLeft: number,
-    public key: string
+    public key: string,
+    public FootballersPosition: string
   ) {
     super(scene);
     scene.add.existing(this);
@@ -39,6 +40,7 @@ export class FootbollersColumn extends Phaser.GameObjects.Container {
     for (let i = 0; i < this.footballersNumber; i++) {
       const footballer = new Footballer(this.scene, position_x, position_y, {
         key: this.key,
+        playerPosition: this.FootballersPosition,
       });
       this.footballers.push(footballer);
       position_y += this.padding;
@@ -51,9 +53,7 @@ export class FootbollersColumn extends Phaser.GameObjects.Container {
       targets: this,
       y: {
         from: from,
-        //   this.y - (this.padding - this.footballers[0].getBounds().height / 2),
         to: to,
-        //   this.y + (this.padding - this.footballers[0].getBounds().height / 2),
       },
       duration: speed * 1000,
       repeat: -1,
@@ -63,5 +63,6 @@ export class FootbollersColumn extends Phaser.GameObjects.Container {
 
   stopMove() {
     this.animation.remove();
+    // this.setPosition(this.x, 0);
   }
 }

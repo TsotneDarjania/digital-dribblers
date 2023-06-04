@@ -1,4 +1,6 @@
 import { Team } from "../components/team";
+import { Match } from "../core/match";
+import { Ball } from "../gameObjects/ball";
 import { Footballer } from "../gameObjects/footballler";
 import { Stadium } from "../gameObjects/stadium";
 
@@ -17,7 +19,13 @@ export class GamePlay extends Phaser.Scene {
     this.screenHeight = this.game.canvas.height;
 
     this.drawStadium();
-    new Team(this, 0, 0, { formation: [5, 4, 2], flag: "georgia-flag" }, false);
+
+    // new Ball(this, 200, 200);
+
+    new Match(this, [
+      new Team(this, { formation: [4, 4, 2], flag: "georgia-flag" }, false),
+      new Team(this, { formation: [4, 3, 3], flag: "france-flag" }, true),
+    ]);
   }
 
   drawStadium() {
@@ -25,8 +33,8 @@ export class GamePlay extends Phaser.Scene {
       this,
       this.screenWidth / 2,
       this.screenHeight / 2,
-      800,
-      400
+      1100,
+      600
     );
   }
 }

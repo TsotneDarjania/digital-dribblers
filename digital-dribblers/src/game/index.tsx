@@ -14,13 +14,16 @@ const Game = () => {
       dom: { createContainer: true },
       physics: {
         default: "arcade",
+        arcade: {
+          debug: true,
+        },
       },
       parent: canvasContainer.current,
       type: Phaser.AUTO,
       scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 1000,
-        height: 600,
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
       backgroundColor: 0x104a1b,
       scene: [Preload, GamePlay],
