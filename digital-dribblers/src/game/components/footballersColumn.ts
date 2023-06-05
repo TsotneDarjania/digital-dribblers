@@ -49,20 +49,23 @@ export class FootbollersColumn extends Phaser.GameObjects.Container {
   }
 
   startMove(speed: number, from: number, to: number) {
-    this.animation = this.scene.add.tween({
-      targets: this,
-      y: {
-        from: from,
-        to: to,
-      },
-      duration: speed * 1000,
-      repeat: -1,
-      yoyo: true,
-    });
+    if (this.animation === undefined) {
+      this.animation = this.scene.add.tween({
+        targets: this,
+        y: {
+          from: from,
+          to: to,
+        },
+        duration: speed * 1000,
+        repeat: -1,
+        yoyo: true,
+      });
+    } else {
+      this.animation.resume();
+    }
   }
 
   stopMove() {
-    this.animation.remove();
-    // this.setPosition(this.x, 0);
+    this.animation.pause();
   }
 }

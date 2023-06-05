@@ -7,7 +7,7 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   stadium!: Stadium;
   tween!: Phaser.Tweens.Tween;
 
-  constructor(scene: GamePlay, x: number, y: number) {
+  constructor(public scene: GamePlay, x: number, y: number) {
     super(scene, x, y, "stadium-ball");
     scene.physics.add.existing(this);
     scene.add.existing(this);
@@ -31,6 +31,15 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     this.setPosition(footballer.x + posX, footballer.getBounds().centerY);
   }
 
+  toCrush(direction: string) {
+    if (direction === "right") {
+      this.setVelocity(200, getRandomFloat(-50, 50));
+    }
+    if (direction === "left") {
+      this.setVelocity(-200, getRandomFloat(-50, 50));
+    }
+  }
+
   moveTo(footballer: Footballer, speed: number) {
     this.tween = this.scene.tweens.add({
       targets: this,
@@ -40,17 +49,41 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     });
   }
 
-  shoot(footballer: Footballer, speed: number) {
+  shoot(direction: string, speed: number) {
     const randomY = getRandomFloat(
-      -calculatePercentage(20, this.stadium.stadiumHeight),
-      calculatePercentage(20, this.stadium.stadiumHeight)
+      -calculatePercentage(50, this.stadium.stadiumHeight),
+      calculatePercentage(50, this.stadium.stadiumHeight)
     );
+
+    let positionX = 0;
+
+    if (direction === "left") {
+      positionX = this.stadium.x - this.stadium.stadiumWidth / 2 - 100;
+    } else {
+      positionX = this.stadium.x + this.stadium.stadiumWidth / 2 + 100;
+    }
 
     this.tween = this.scene.tweens.add({
       targets: this,
-      x: footballer.getBounds().centerX,
-      y: footballer.getBounds().centerY + randomY,
+      x: positionX,
+      y: this.stadium.y + randomY,
       duration: speed * 1000,
+      onComplete: () => {
+        this.scene.match.ballIReset();
+      },
+    });
+  }
+
+  startBlinkAnimation() {
+    this.tween = this.scene.tweens.add({
+      targets: this,
+      alpha: 0,
+      yoyo: true,
+      repeat: 8,
+      duration: 200,
+      onComplete: () => {
+        this.scene.match.ballIReset();
+      },
     });
   }
 

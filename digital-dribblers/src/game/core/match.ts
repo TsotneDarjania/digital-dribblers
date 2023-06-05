@@ -3,6 +3,7 @@ import { Team } from "../components/team";
 import { Ball } from "../gameObjects/ball";
 import { Footballer } from "../gameObjects/footballler";
 import { GamePlay } from "../scenes/gamePlay";
+import { MatchIndicators } from "../ui/matchIndicators";
 import { CollisionDetecion } from "./collisionDetection";
 
 export class Match {
@@ -14,6 +15,13 @@ export class Match {
   footballerWithBall!: Footballer;
 
   teamWithBall = "host";
+
+  isAlreadyGoal = false;
+
+  hostTeamScore = 0;
+  guestTeamScore = 0;
+
+  matchIndicators!: MatchIndicators;
 
   constructor(public scene: GamePlay, public teams: Array<Team>) {
     this.init();
@@ -28,6 +36,14 @@ export class Match {
     this.startGame();
 
     new CollisionDetecion(this.scene, this);
+    this.matchIndicators = new MatchIndicators(this.scene, this, {
+      hostTeam: {
+        name: "Georgia",
+      },
+      guestTeam: {
+        name: "France",
+      },
+    });
   }
 
   addBall() {
@@ -37,7 +53,6 @@ export class Match {
 
   startGame() {
     this.guestTeam.startMotion();
-
     this.makePass(this.selectNextFootballer(this.HostTeam));
   }
 
@@ -45,15 +60,35 @@ export class Match {
     if (nextPlayer === undefined) {
       this.shoot();
     } else {
-      this.ball.moveTo(nextPlayer, 1);
+      this.ball.moveTo(nextPlayer, 2);
+    }
+  }
+
+  ballIReset() {
+    this.isAlreadyGoal = false;
+    this.ball.stop();
+    if (this.teamWithBall === "guest") {
+      this.ball.setToFootbaler(this.HostTeam.goalKeeper, false);
+      this.teamWithBall = "host";
+      this.footballerWithBall = this.HostTeam.goalKeeper;
+      this.HostTeam.stopMotion();
+      this.guestTeam.startMotion();
+      this.makePass(this.selectNextFootballer(this.HostTeam));
+    } else {
+      this.ball.setToFootbaler(this.guestTeam.goalKeeper, true);
+      this.teamWithBall = "guest";
+      this.footballerWithBall = this.guestTeam.goalKeeper;
+      this.guestTeam.stopMotion();
+      this.HostTeam.startMotion();
+      this.makePass(this.selectNextFootballer(this.guestTeam));
     }
   }
 
   shoot() {
     if (this.teamWithBall === "host") {
-      this.ball.shoot(this.guestTeam.goalKeeper, 0.5);
+      this.ball.shoot("right", 1.2);
     } else {
-      this.ball.shoot(this.HostTeam.goalKeeper, 0.5);
+      this.ball.shoot("left", 1.2);
     }
   }
 
@@ -84,6 +119,20 @@ export class Match {
       this.HostTeam.startMotion();
 
       this.makePass(this.selectNextFootballer(this.guestTeam));
+    }
+  }
+
+  isGoal(direction: string) {
+    if (this.isAlreadyGoal === false) {
+      this.isAlreadyGoal = true;
+      this.ball.stop();
+      this.ball.startBlinkAnimation();
+      if (direction === "left") {
+        this.guestTeamScore += 1;
+      } else {
+        this.hostTeamScore += 1;
+      }
+      this.matchIndicators.updateScores();
     }
   }
 

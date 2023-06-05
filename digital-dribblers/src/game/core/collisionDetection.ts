@@ -18,6 +18,37 @@ export class CollisionDetecion {
     this.collectFootballersCollisions();
     this.addDetectionForGuestTeam();
     this.addDetectionForHostTeam();
+
+    this.addDetectionToLeftGoalCollider();
+    this.addDetectionToRightGoalCollider();
+    this.addDetectionForLeftPoles();
+    this.addDetectionForRightPoles();
+  }
+
+  addDetectionForLeftPoles() {
+    this.scene.physics.add.collider(
+      this.match.ball,
+      this.scene.stadium.leftPoles,
+      (a) => {
+        const ball = a as Ball;
+
+        ball.stop();
+        ball.toCrush("right");
+      }
+    );
+  }
+
+  addDetectionForRightPoles() {
+    this.scene.physics.add.collider(
+      this.match.ball,
+      this.scene.stadium.rightPoles,
+      (a) => {
+        const ball = a as Ball;
+
+        ball.stop();
+        ball.toCrush("left");
+      }
+    );
   }
 
   collectFootballersCollisions() {
@@ -28,6 +59,26 @@ export class CollisionDetecion {
     this.match.HostTeam.allFootbalers.forEach((footbaler) => {
       this.hostTeamFootballersCollisions.add(footbaler);
     });
+  }
+
+  addDetectionToLeftGoalCollider() {
+    this.scene.physics.add.collider(
+      this.match.ball,
+      this.scene.stadium.leftGoalCollider,
+      () => {
+        this.match.isGoal("left");
+      }
+    );
+  }
+
+  addDetectionToRightGoalCollider() {
+    this.scene.physics.add.collider(
+      this.match.ball,
+      this.scene.stadium.rightGoalCollider,
+      () => {
+        this.match.isGoal("right");
+      }
+    );
   }
 
   addDetectionForGuestTeam() {

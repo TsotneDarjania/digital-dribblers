@@ -8,8 +8,14 @@ export class Stadium extends Phaser.GameObjects.Layer {
   screenWidth!: number;
   screenHeight!: number;
 
+  leftGoalCollider!: Phaser.GameObjects.Rectangle;
+  rightGoalCollider!: Phaser.GameObjects.Rectangle;
+
+  leftPoles!: Phaser.GameObjects.Group;
+  rightPoles!: Phaser.GameObjects.Group;
+
   constructor(
-    scene: GamePlay,
+    public scene: GamePlay,
     public x: number,
     public y: number,
     public stadiumWidth: number,
@@ -23,6 +29,9 @@ export class Stadium extends Phaser.GameObjects.Layer {
   init() {
     this.screenWidth = this.scene.game.canvas.width;
     this.screenHeight = this.scene.game.canvas.height;
+
+    this.leftPoles = this.scene.add.group();
+    this.rightPoles = this.scene.add.group();
 
     this.addMiddleLine();
     this.addCenterCircle();
@@ -121,6 +130,34 @@ export class Stadium extends Phaser.GameObjects.Layer {
       width,
       height
     );
+
+    const leftPole = this.scene.add.rectangle(
+      this.x - this.stadiumWidth / 2 - width / 2,
+      this.y - height / 2,
+      width,
+      10
+    );
+    this.scene.physics.add.existing(leftPole, true);
+
+    const rightPole = this.scene.add.rectangle(
+      this.x - this.stadiumWidth / 2 - width / 2,
+      this.y + height / 2,
+      width,
+      10
+    );
+
+    this.scene.physics.add.existing(rightPole, true);
+
+    this.leftPoles.add(rightPole);
+    this.leftPoles.add(leftPole);
+
+    this.leftGoalCollider = this.scene.add.rectangle(
+      this.x - this.stadiumWidth / 2 - width - calculatePercentage(55, width),
+      this.y,
+      100,
+      height
+    );
+    this.scene.physics.add.existing(this.leftGoalCollider, true);
   }
 
   addRightGoalLine() {
@@ -135,6 +172,34 @@ export class Stadium extends Phaser.GameObjects.Layer {
       width,
       height
     );
+
+    const leftPole = this.scene.add.rectangle(
+      this.x + this.stadiumWidth / 2 + width / 2,
+      this.y - height / 2,
+      width,
+      10
+    );
+    this.scene.physics.add.existing(leftPole, true);
+
+    const rightPole = this.scene.add.rectangle(
+      this.x + this.stadiumWidth / 2 + width / 2,
+      this.y + height / 2,
+      width,
+      10
+    );
+
+    this.scene.physics.add.existing(rightPole, true);
+
+    this.rightPoles.add(rightPole);
+    this.rightPoles.add(leftPole);
+
+    this.rightGoalCollider = this.scene.add.rectangle(
+      this.x + this.stadiumWidth / 2 + width + calculatePercentage(55, width),
+      this.y,
+      100,
+      height
+    );
+    this.scene.physics.add.existing(this.rightGoalCollider, true);
   }
 
   addCenterCircle() {

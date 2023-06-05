@@ -57,19 +57,19 @@ export class Team extends Phaser.GameObjects.Container {
 
   startMotion() {
     this.defenceColumn.startMove(
-      1,
-      -this.columnMotionDistance,
-      +this.columnMotionDistance
+      2,
+      this.defenceColumn.y - this.columnMotionDistance,
+      this.defenceColumn.y + this.columnMotionDistance
     );
     this.centerColumn.startMove(
-      1,
-      -this.columnMotionDistance,
-      +this.columnMotionDistance
+      2,
+      this.centerColumn.y - this.columnMotionDistance,
+      this.centerColumn.y + this.columnMotionDistance
     );
     this.offenceColumn.startMove(
-      1,
-      -this.columnMotionDistance,
-      +this.columnMotionDistance
+      2,
+      this.offenceColumn.y - this.columnMotionDistance,
+      this.offenceColumn.y + this.columnMotionDistance
     );
   }
 
