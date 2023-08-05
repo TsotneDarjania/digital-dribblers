@@ -1,4 +1,4 @@
-import { calculatePercentage } from "../../helper/tatukaMath";
+import { calculatePercentage } from "../../../helper/tatukaMath";
 import { GamePlay } from "../scenes/gamePlay";
 
 export class Stadium extends Phaser.GameObjects.Layer {

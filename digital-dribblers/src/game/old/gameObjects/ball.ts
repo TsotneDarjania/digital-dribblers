@@ -1,4 +1,7 @@
-import { calculatePercentage, getRandomFloat } from "../../helper/tatukaMath";
+import {
+  calculatePercentage,
+  getRandomFloat,
+} from "../../../helper/tatukaMath";
 import { GamePlay } from "../scenes/gamePlay";
 import { Footballer } from "./footballler";
 import { Stadium } from "./stadium";

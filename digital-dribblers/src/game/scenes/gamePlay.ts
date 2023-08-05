@@ -1,38 +1,23 @@
-import { Team } from "../components/team";
-import { Match } from "../core/match";
-import { Stadium } from "../gameObjects/stadium";
+import { Stadium } from "../components/stadium";
 
 export class GamePlay extends Phaser.Scene {
-  screenWidth!: number;
-  screenHeight!: number;
-
   stadium!: Stadium;
-
-  match!: Match;
 
   constructor() {
     super("GamePlay");
   }
 
   create() {
-    this.screenWidth = this.game.canvas.width;
-    this.screenHeight = this.game.canvas.height;
-
-    this.drawStadium();
-
-    this.match = new Match(this, [
-      new Team(this, { formation: [4, 4, 2], flag: "georgia-flag" }, false),
-      new Team(this, { formation: [4, 3, 3], flag: "france-flag" }, true),
-    ]);
+    this.addStadium();
   }
 
-  drawStadium() {
+  addStadium() {
     this.stadium = new Stadium(
       this,
-      this.screenWidth / 2,
-      this.screenHeight / 2,
-      1100,
-      600
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2,
+      850,
+      500
     );
   }
 }

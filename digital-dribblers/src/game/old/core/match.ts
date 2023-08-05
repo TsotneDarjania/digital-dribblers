@@ -1,4 +1,4 @@
-import { getRandomFloat } from "../../helper/tatukaMath";
+import { getRandomFloat } from "../../../helper/tatukaMath";
 import { Team } from "../components/team";
 import { Ball } from "../gameObjects/ball";
 import { Footballer } from "../gameObjects/footballler";

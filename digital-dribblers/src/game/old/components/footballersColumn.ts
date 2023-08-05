@@ -1,4 +1,4 @@
-import { calculatePercentage } from "../../helper/tatukaMath";
+import { calculatePercentage } from "../../../helper/tatukaMath";
 import { Footballer } from "../gameObjects/footballler";
 import { GamePlay } from "../scenes/gamePlay";
 

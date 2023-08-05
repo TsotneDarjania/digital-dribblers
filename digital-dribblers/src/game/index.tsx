@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 
 import style from "./style.module.css";
-import { Preload } from "./scenes/preload";
 import { GamePlay } from "./scenes/gamePlay";
+import { Preload } from "./scenes/preload";
 
 const Game = () => {
   const canvasContainer = useRef(null);
@@ -15,7 +15,7 @@ const Game = () => {
       physics: {
         default: "arcade",
         arcade: {
-          debug: false,
+          debug: true,
         },
       },
       parent: canvasContainer.current,
