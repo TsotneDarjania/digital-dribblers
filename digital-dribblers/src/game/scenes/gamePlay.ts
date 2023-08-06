@@ -1,4 +1,5 @@
 import { Stadium } from "../components/stadium";
+import { Team } from "../components/team";
 
 export class GamePlay extends Phaser.Scene {
   stadium!: Stadium;
@@ -9,6 +10,11 @@ export class GamePlay extends Phaser.Scene {
 
   create() {
     this.addStadium();
+
+    new Team(this, this.stadium, true, {
+      formation: [4, 4, 2],
+      key: "georgia-flag",
+    });
   }
 
   addStadium() {

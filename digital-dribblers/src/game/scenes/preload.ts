@@ -10,6 +10,7 @@ export class Preload extends Phaser.Scene {
 
     //flags
     this.load.image("georgia-flag", "images/flags/georgia.png");
+    this.load.image("france-flag", "images/flags/france.png");
   }
 
   create() {

@@ -5,6 +5,7 @@ export class Footballer extends Phaser.GameObjects.Container {
     scene: Phaser.Scene,
     x: number,
     y: number,
+    public scale: number,
     public footballerData: FootbalerData
   ) {
     super(scene, x, y);
@@ -15,7 +16,10 @@ export class Footballer extends Phaser.GameObjects.Container {
 
   init() {
     this.footballerBody = this.scene.physics.add
-      .image(this.x, this.y, this.footballerData.key)
-      .setCircle(20);
+      .image(0, 0, this.footballerData.key)
+      .setCircle(20, 4, 4)
+      .setScale(this.scale);
+
+    this.add(this.footballerBody);
   }
 }
