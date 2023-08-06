@@ -1,4 +1,5 @@
 import { calculatePercentage } from "../../helper/tatukaMath";
+import { Footballer } from "../characters/footballer";
 import { TeamData } from "../interfaces/teamData";
 import { FootballersLine } from "./footballersLine";
 import { Stadium } from "./stadium";
@@ -7,6 +8,8 @@ export class Team extends Phaser.GameObjects.Container {
   defenders!: FootballersLine;
   midfielders!: FootballersLine;
   attackers!: FootballersLine;
+
+  goalKeeper!: Footballer;
 
   constructor(
     public scene: Phaser.Scene,
@@ -21,9 +24,25 @@ export class Team extends Phaser.GameObjects.Container {
   }
 
   init() {
+    this.addGoalKeeper();
+
     this.addDefenders();
     this.addMidfielders();
     this.addAttachers();
+
+    this.startMotion();
+  }
+
+  addGoalKeeper() {
+    this.goalKeeper = new Footballer(
+      this.scene,
+      this.stadium.x - calculatePercentage(50, this.stadium.width),
+      this.stadium.y,
+      calculatePercentage(0.11, this.stadium.width),
+      { key: this.teamData.key }
+    );
+
+    this.add(this.goalKeeper);
   }
 
   addDefenders() {
@@ -60,5 +79,18 @@ export class Team extends Phaser.GameObjects.Container {
       { key: this.teamData.key }
     );
     this.add(this.attackers);
+  }
+
+  startMotion() {
+    this.scene.tweens.add({
+      targets: this,
+      y: {
+        from: -this.stadium.leftGoalPost.height / 2,
+        to: this.stadium.leftGoalPost.height / 2,
+      },
+      repeat: -1,
+      yoyo: true,
+      duration: this.teamData.motionDuration,
+    });
   }
 }

@@ -14,6 +14,7 @@ export class GamePlay extends Phaser.Scene {
     new Team(this, this.stadium, true, {
       formation: [4, 4, 2],
       key: "georgia-flag",
+      motionDuration: 1500,
     });
   }
 
