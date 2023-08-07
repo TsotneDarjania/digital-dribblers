@@ -1,6 +1,7 @@
-export class Footballer extends Phaser.GameObjects.Container {
-  footballerBody!: Phaser.Physics.Arcade.Image;
+import { calculatePercentage, getRandomFloat } from "../../helper/tatukaMath";
+import { Ball } from "../gameObjects/ball";
 
+export class Footballer extends Phaser.Physics.Arcade.Image {
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -8,18 +9,53 @@ export class Footballer extends Phaser.GameObjects.Container {
     public scale: number,
     public footballerData: FootbalerData
   ) {
-    super(scene, x, y);
+    super(scene, x, y, footballerData.key);
     scene.add.existing(this);
+    scene.physics.add.existing(this);
 
     this.init();
   }
 
   init() {
-    this.footballerBody = this.scene.physics.add
-      .image(0, 0, this.footballerData.key)
-      .setCircle(20, 4, 4)
-      .setScale(this.scale);
+    this.setCircle(calculatePercentage(55, this.displayWidth), 4, 4);
+    this.setScale(this.scale);
+  }
 
-    this.add(this.footballerBody);
+  setBall(ball: Ball, side: string) {
+    // const x =
+    //   side === "fromRight"
+    //     ? this.getBounds().centerX +
+    //       this.displayWidth / 2 +
+    //       ball.displayWidth / 2
+    //     : this.getBounds().centerX -
+    //       this.displayWidth / 2 -
+    //       ball.displayWidth / 2;
+
+    const x =
+      side === "fromRight"
+        ? this.getBounds().centerX +
+          this.displayWidth / 2 +
+          ball.displayWidth / 2
+        : this.getBounds().centerX -
+          this.displayWidth / 2 -
+          ball.displayWidth / 2;
+
+    ball.setPosition(x, this.getBounds().centerY);
+  }
+
+  makePass(
+    ball: Ball,
+    nextFootballer: Footballer,
+    passInaccuracy: number,
+    speed: number
+  ) {
+    const random = getRandomFloat(-passInaccuracy, passInaccuracy);
+
+    this.scene.physics.moveTo(
+      ball,
+      nextFootballer.getBounds().centerX + random,
+      nextFootballer.getBounds().centerY + random,
+      speed
+    );
   }
 }

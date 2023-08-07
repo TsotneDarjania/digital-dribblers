@@ -2,14 +2,18 @@ import { calculatePercentage } from "../../helper/tatukaMath";
 import { Footballer } from "../characters/footballer";
 import { TeamData } from "../interfaces/teamData";
 import { FootballersLine } from "./footballersLine";
-import { Stadium } from "./stadium";
+import { Stadium } from "../gameObjects/stadium";
 
 export class Team extends Phaser.GameObjects.Container {
   defenders!: FootballersLine;
   midfielders!: FootballersLine;
   attackers!: FootballersLine;
 
+  allFootballers: Array<Footballer> = [];
+
   goalKeeper!: Footballer;
+
+  tween!: Phaser.Tweens.Tween;
 
   constructor(
     public scene: Phaser.Scene,
@@ -30,59 +34,82 @@ export class Team extends Phaser.GameObjects.Container {
     this.addMidfielders();
     this.addAttachers();
 
-    this.startMotion();
+    //collect all footballer
+    [
+      this.defenders.footballers,
+      this.midfielders.footballers,
+      this.attackers.footballers,
+    ].forEach((footballers) => {
+      this.allFootballers.push(...footballers);
+    });
   }
 
   addGoalKeeper() {
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(50, this.stadium.width)
+      : this.stadium.x + calculatePercentage(50, this.stadium.width);
+
     this.goalKeeper = new Footballer(
       this.scene,
-      this.stadium.x - calculatePercentage(50, this.stadium.width),
+      x,
       this.stadium.y,
-      calculatePercentage(0.11, this.stadium.width),
-      { key: this.teamData.key }
+      calculatePercentage(0.09, this.stadium.width),
+      { key: this.teamData.key, position: "goalKeeper" }
     );
 
     this.add(this.goalKeeper);
   }
 
   addDefenders() {
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(34, this.stadium.width)
+      : this.stadium.x + calculatePercentage(34, this.stadium.width);
+
     this.defenders = new FootballersLine(
       this.scene,
-      this.stadium.x - calculatePercentage(30, this.stadium.width),
+      x,
       this.stadium.y - this.stadium.height / 2,
       this.stadium,
       this.teamData.formation[0],
-      { key: this.teamData.key }
+      { key: this.teamData.key, position: "defender" }
     );
     this.add(this.defenders);
   }
 
   addMidfielders() {
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(10, this.stadium.width)
+      : this.stadium.x + calculatePercentage(10, this.stadium.width);
+
     this.midfielders = new FootballersLine(
       this.scene,
-      this.stadium.x - calculatePercentage(5, this.stadium.width),
+      x,
       this.stadium.y - this.stadium.height / 2,
       this.stadium,
       this.teamData.formation[1],
-      { key: this.teamData.key }
+      { key: this.teamData.key, position: "midfielder" }
     );
     this.add(this.midfielders);
   }
 
   addAttachers() {
+    const x = this.isHost
+      ? this.stadium.x + calculatePercentage(25, this.stadium.width)
+      : this.stadium.x - calculatePercentage(25, this.stadium.width);
+
     this.attackers = new FootballersLine(
       this.scene,
-      this.stadium.x + calculatePercentage(20, this.stadium.width),
+      x,
       this.stadium.y - this.stadium.height / 2,
       this.stadium,
       this.teamData.formation[2],
-      { key: this.teamData.key }
+      { key: this.teamData.key, position: "attacker" }
     );
     this.add(this.attackers);
   }
 
   startMotion() {
-    this.scene.tweens.add({
+    this.tween = this.scene.tweens.add({
       targets: this,
       y: {
         from: -this.stadium.leftGoalPost.height / 2,
@@ -92,5 +119,17 @@ export class Team extends Phaser.GameObjects.Container {
       yoyo: true,
       duration: this.teamData.motionDuration,
     });
+  }
+
+  stopMotion() {
+    this.tween.pause();
+  }
+
+  resumeMotion() {
+    if (this.tween !== undefined) {
+      this.tween.resume();
+    } else {
+      this.startMotion();
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { calculatePercentage } from "../../helper/tatukaMath";
 import { Footballer } from "../characters/footballer";
-import { Stadium } from "./stadium";
+import { Stadium } from "../gameObjects/stadium";
 
 export class FootballersLine extends Phaser.GameObjects.Container {
   footballers: Array<Footballer> = [];
@@ -31,7 +31,7 @@ export class FootballersLine extends Phaser.GameObjects.Container {
         this.scene,
         0,
         y,
-        calculatePercentage(0.11, this.stadium.width),
+        calculatePercentage(0.09, this.stadium.width),
         this.footballerData
       );
       this.add(footballer);

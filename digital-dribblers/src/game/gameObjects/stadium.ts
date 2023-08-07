@@ -49,32 +49,38 @@ export class Stadium extends Phaser.GameObjects.Layer {
     //top border
     this.topBorder = this.scene.physics.add
       .image(this.x, this.y - this.height / 2, "default")
-      .setDisplaySize(this.width, this.lineWidth);
+      .setDisplaySize(this.width, this.lineWidth)
+      .setImmovable(true);
 
     //bottom border
     this.bottomBorder = this.scene.physics.add
       .image(this.x, this.y + this.height / 2, "default")
-      .setDisplaySize(this.width, this.lineWidth);
+      .setDisplaySize(this.width, this.lineWidth)
+      .setImmovable(true);
 
     this.leftTopBorder = this.scene.physics.add
       .image(this.x - this.width / 2, this.y - this.height / 2, "default")
       .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
-      .setOrigin(0.5, 0);
+      .setOrigin(0.5, 0)
+      .setImmovable(true);
 
     this.leftBottomBorder = this.scene.physics.add
       .image(this.x - this.width / 2, this.y + this.height / 2, "default")
       .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
-      .setOrigin(0.5, 1);
+      .setOrigin(0.5, 1)
+      .setImmovable(true);
 
     this.rightTopBorder = this.scene.physics.add
       .image(this.x + this.width / 2, this.y - this.height / 2, "default")
       .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
-      .setOrigin(0.5, 0);
+      .setOrigin(0.5, 0)
+      .setImmovable(true);
 
     this.rightBottomBorder = this.scene.physics.add
       .image(this.x + this.width / 2, this.y + this.height / 2, "default")
       .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
-      .setOrigin(0.5, 1);
+      .setOrigin(0.5, 1)
+      .setImmovable(true);
   }
 
   addLeftGoalPost() {
