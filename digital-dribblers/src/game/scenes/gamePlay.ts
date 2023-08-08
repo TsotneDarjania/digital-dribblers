@@ -13,29 +13,30 @@ export class GamePlay extends Phaser.Scene {
     this.addStadium();
 
     const georgia = new Team(this, this.stadium, true, {
-      formation: [4, 4, 2],
-      key: "georgia-flag",
-      motionDuration: 1500,
-      passDelay: 1000,
-      longPassChance: 40,
-      ballpossession: 70,
-      passInaccuracy: 70,
-      passSpeed: 200,
+      formation: [3, 4, 3],
+      key: "arsenal-flag",
+      name: "Arsenal",
+      motionDuration: 600,
+      passDelay: 300,
+      longPassChance: 20,
+      ballpossession: 0,
+      passInaccuracy: 10,
+      passSpeed: 320,
     });
 
     const france = new Team(this, this.stadium, false, {
       formation: [4, 4, 2],
-      key: "france-flag",
-      motionDuration: 700,
-      passDelay: 500,
-      longPassChance: 20,
-      ballpossession: 70,
-      passInaccuracy: 20,
-      passSpeed: 300,
+      key: "aston-flag",
+      name: "Bornmount",
+      motionDuration: 500,
+      passDelay: 200,
+      longPassChance: 80,
+      ballpossession: 0,
+      passInaccuracy: 60,
+      passSpeed: 250,
     });
 
     const match = new Match(this, georgia, france, this.stadium);
-    match.start();
   }
 
   addStadium() {

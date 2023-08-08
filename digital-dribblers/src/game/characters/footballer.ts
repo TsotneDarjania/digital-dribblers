@@ -19,28 +19,24 @@ export class Footballer extends Phaser.Physics.Arcade.Image {
   init() {
     this.setCircle(calculatePercentage(55, this.displayWidth), 4, 4);
     this.setScale(this.scale);
+    this.setImmovable(true);
   }
 
   setBall(ball: Ball, side: string) {
-    // const x =
-    //   side === "fromRight"
-    //     ? this.getBounds().centerX +
-    //       this.displayWidth / 2 +
-    //       ball.displayWidth / 2
-    //     : this.getBounds().centerX -
-    //       this.displayWidth / 2 -
-    //       ball.displayWidth / 2;
+    ball.setVelocity(0, 0);
 
     const x =
       side === "fromRight"
         ? this.getBounds().centerX +
-          this.displayWidth / 2 +
-          ball.displayWidth / 2
+          this.getBounds().width / 2 +
+          ball.getBounds().width / 2
         : this.getBounds().centerX -
-          this.displayWidth / 2 -
-          ball.displayWidth / 2;
+          this.getBounds().width / 2 -
+          ball.getBounds().width / 2;
 
-    ball.setPosition(x, this.getBounds().centerY);
+    setTimeout(() => {
+      ball.setPosition(x, this.getBounds().centerY);
+    }, 40);
   }
 
   makePass(

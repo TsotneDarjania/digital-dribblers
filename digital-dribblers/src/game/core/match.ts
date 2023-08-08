@@ -1,10 +1,12 @@
 import { calculatePercentage, getRandomFloat } from "../../helper/tatukaMath";
 import { Footballer } from "../characters/footballer";
+import { MenuButton } from "../components/buttons/menuButton";
 import { Team } from "../components/team";
 import { Ball } from "../gameObjects/ball";
 import { Stadium } from "../gameObjects/stadium";
 import { CollisionDetection } from "./collisionDetection";
 import { FootbalerOptions } from "./footballerOptions";
+import { MatchIndicators } from "./matchIndicators";
 
 export class Match {
   ball!: Ball;
@@ -12,6 +14,20 @@ export class Match {
   teamWidhBall!: Team;
 
   stop = false;
+  ballIsWithFootballer = false;
+
+  continueButton!: MenuButton;
+  tacticsButton!: MenuButton;
+  finishButton!: MenuButton;
+  startMatchButton!: MenuButton;
+
+  matchIndicators!: MatchIndicators;
+
+  //sounds
+  refereeSoundEffect!: Phaser.Sound.BaseSound;
+  passSoundEffect!: Phaser.Sound.BaseSound;
+  setBallSoundEffect!: Phaser.Sound.BaseSound;
+  shootSoundEffect!: Phaser.Sound.BaseSound;
 
   constructor(
     public scene: Phaser.Scene,
@@ -23,9 +39,87 @@ export class Match {
   }
 
   init() {
+    this.addSoundEffects();
+    this.createMenuButtons();
     this.addBall();
     this.addCollisionDetections();
+    this.addInticators();
     this.addGoalEventListener();
+  }
+
+  addSoundEffects() {
+    this.refereeSoundEffect = this.scene.sound.add("referee-effect", {
+      volume: 1,
+      loop: false,
+    });
+    this.passSoundEffect = this.scene.sound.add("pass-effect", {
+      volume: 0.2,
+      loop: false,
+    });
+    this.setBallSoundEffect = this.scene.sound.add("setBall-effect", {
+      volume: 0.1,
+      loop: false,
+    });
+    this.shootSoundEffect = this.scene.sound.add("shoot-effect", {
+      volume: 1,
+      loop: false,
+    });
+  }
+
+  createMenuButtons() {
+    this.continueButton = new MenuButton(this.scene, 0, 0, "Continue");
+
+    this.continueButton
+      .setPosition(
+        this.scene.game.canvas.width / 2 -
+          this.continueButton.getBounds().width / 2,
+        this.scene.game.canvas.height - this.continueButton.getBounds().height
+      )
+      .setVisible(false)
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        this.stop = false;
+        this.teamWidhBall = this.guestTeam;
+        this.setBall(this.guestTeam.goalKeeper);
+        this.hotsTeam.resumeMotion();
+        this.matchIndicators.resumeTimer();
+        this.ball.setAlpha(1);
+
+        this.refereeSoundEffect.play();
+
+        this.tacticsButton.setVisible(false);
+        this.continueButton.setVisible(false);
+      });
+
+    this.tacticsButton = new MenuButton(this.scene, 0, 0, "Tactics");
+
+    this.tacticsButton
+      .setPosition(
+        this.scene.game.canvas.width / 2 +
+          this.tacticsButton.getBounds().width / 2,
+        this.scene.game.canvas.height - this.tacticsButton.getBounds().height
+      )
+      .setVisible(false);
+
+    this.finishButton = new MenuButton(this.scene, 0, 0, "Finish");
+
+    this.finishButton
+      .setPosition(
+        this.scene.game.canvas.width / 2,
+        this.scene.game.canvas.height - this.finishButton.getBounds().height
+      )
+      .setVisible(false);
+
+    this.startMatchButton = new MenuButton(this.scene, 0, 0, "Start");
+
+    this.startMatchButton
+      .setPosition(
+        this.scene.game.canvas.width / 2,
+        this.scene.game.canvas.height - this.startMatchButton.getBounds().height
+      )
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        this.startMatchButton.setVisible(false);
+        this.start();
+      });
   }
 
   addCollisionDetections() {
@@ -38,13 +132,29 @@ export class Match {
     );
   }
 
+  addInticators() {
+    this.matchIndicators = new MatchIndicators(
+      this.scene,
+      this,
+      this.hotsTeam.teamData.name,
+      this.guestTeam.teamData.name
+    );
+  }
+
   start() {
     this.guestTeam.startMotion();
     this.teamWidhBall = this.hotsTeam;
     this.setBall(this.hotsTeam.goalKeeper);
+    this.matchIndicators.startTimer();
+
+    this.refereeSoundEffect.play();
   }
 
   setBall(footballer: Footballer) {
+    if (this.ballIsWithFootballer) return;
+    this.setBallSoundEffect.play();
+
+    this.ballIsWithFootballer = true;
     this.teamWidhBall === this.hotsTeam
       ? footballer.setBall(this.ball, "fromRight")
       : footballer.setBall(this.ball, "fromLeft");
@@ -54,6 +164,7 @@ export class Match {
   }
 
   makeDesition() {
+    if (this.stop) return;
     const footbalerOption = new FootbalerOptions(
       this.footballerWithBall,
       this.teamWidhBall
@@ -61,6 +172,8 @@ export class Match {
 
     if (footbalerOption.desition === "pass") {
       setTimeout(() => {
+        this.passSoundEffect.play();
+        this.ballIsWithFootballer = false;
         this.footballerWithBall.makePass(
           this.ball,
           footbalerOption.nextFootballer,
@@ -71,6 +184,8 @@ export class Match {
     }
     if (footbalerOption.desition === "shoot") {
       setTimeout(() => {
+        this.shootSoundEffect.play();
+        this.ballIsWithFootballer = false;
         this.teamWidhBall === this.hotsTeam
           ? this.rightShoot()
           : this.leftShoot();
@@ -79,17 +194,19 @@ export class Match {
   }
 
   ballTouchFootballer(footballer: Footballer) {
+    if (this.stop) return;
     this.teamWidhBall.allFootballers.includes(footballer)
       ? this.passRecieveSucces(footballer)
       : this.passIsIntercepted(footballer);
-    this.ball.setVelocity(0, 0);
   }
 
   passRecieveSucces(footballer: Footballer) {
+    if (this.stop) return;
     this.setBall(footballer);
   }
 
   passIsIntercepted(footballer: Footballer) {
+    if (this.stop) return;
     if (this.teamWidhBall === this.hotsTeam) {
       this.teamWidhBall = this.guestTeam;
       this.guestTeam.stopMotion();
@@ -104,6 +221,7 @@ export class Match {
   }
 
   leftShoot() {
+    if (this.stop) return;
     const randomY = getRandomFloat(
       -this.stadium.leftGoalPost.goalLine.displayHeight,
       this.stadium.leftGoalPost.goalLine.displayHeight
@@ -118,6 +236,7 @@ export class Match {
   }
 
   rightShoot() {
+    if (this.stop) return;
     const randomY = getRandomFloat(
       -this.stadium.leftGoalPost.goalLine.displayHeight,
       this.stadium.leftGoalPost.goalLine.displayHeight
@@ -133,6 +252,9 @@ export class Match {
 
   addGoalEventListener() {
     this.scene.events.on("update", () => {
+      if (this.stop) this.ball.setVelocity(0, 0);
+      if (this.stop) return;
+
       if (
         this.ball.x + this.ball.displayWidth / 2 <
         this.stadium.leftGoalPost.goalLine.x
@@ -154,6 +276,7 @@ export class Match {
 
     if (this.stop) return;
     this.stop = true;
+    this.refereeSoundEffect.play();
 
     this.ball.startGoalAnimation();
     this.hotsTeam.stopMotion();
@@ -161,9 +284,7 @@ export class Match {
 
     setTimeout(() => {
       this.reset(team);
-    }, 5000);
-
-    console.log("goal! " + team);
+    }, 2000);
   }
 
   reset(team: string) {
@@ -171,14 +292,54 @@ export class Match {
       this.hotsTeam.startMotion();
       this.teamWidhBall = this.guestTeam;
       this.setBall(this.guestTeam.goalKeeper);
+
+      this.matchIndicators.hostTeamScore += 1;
+      this.matchIndicators.updateScores();
     } else {
       this.guestTeam.startMotion();
       this.teamWidhBall = this.hotsTeam;
       this.setBall(this.hotsTeam.goalKeeper);
+
+      this.matchIndicators.guestTeamScore += 1;
+      this.matchIndicators.updateScores();
     }
     this.ball.stopGoalAnimation();
     this.ball.setAlpha(1);
 
-    this.stop = false;
+    setTimeout(() => {
+      this.stop = false;
+      this.makeDesition();
+    }, 1000);
+  }
+
+  halfTimeisOver() {
+    this.refereeSoundEffect.play();
+    this.stop = true;
+    this.ball.setVelocity(0, 0);
+    this.ball.setAlpha(0);
+
+    this.tacticsButton.setVisible(true);
+    this.continueButton.setVisible(true);
+
+    this.hotsTeam.tween.pause();
+    this.guestTeam.tween.pause();
+
+    this.hotsTeam.tween.seek(710);
+    this.guestTeam.tween.seek(350);
+  }
+
+  finishMatch() {
+    this.refereeSoundEffect.play();
+    this.stop = true;
+    this.ball.setVelocity(0, 0);
+    this.ball.setAlpha(0);
+
+    this.finishButton.setVisible(true);
+
+    this.hotsTeam.tween.pause();
+    this.guestTeam.tween.pause();
+
+    this.hotsTeam.tween.seek(710);
+    this.guestTeam.tween.seek(350);
   }
 }

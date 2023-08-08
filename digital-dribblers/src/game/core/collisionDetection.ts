@@ -2,12 +2,25 @@ import { Footballer } from "../characters/footballer";
 import { Match } from "./match";
 
 export class CollisionDetection {
+  borderSoundEffect!: Phaser.Sound.BaseSound;
+  setBallSoundEffect!: Phaser.Sound.BaseSound;
+
   constructor(public scene: Phaser.Scene, public match: Match) {
     this.init();
   }
 
   init() {
     this.addDetections();
+
+    this.borderSoundEffect = this.scene.sound.add("border-effect", {
+      volume: 0.6,
+      loop: false,
+    });
+
+    this.setBallSoundEffect = this.scene.sound.add("setBall-effect", {
+      volume: 0.1,
+      loop: false,
+    });
   }
 
   addDetections() {
@@ -33,6 +46,7 @@ export class CollisionDetection {
       [this.match.hotsTeam.goalKeeper, this.match.guestTeam.goalKeeper],
       () => {
         console.log("goalkeeer touch the ball");
+        this.setBallSoundEffect.play();
       }
     );
 
@@ -53,6 +67,8 @@ export class CollisionDetection {
       stadiumBorders.push(obj);
     });
 
-    this.scene.physics.add.collider(this.match.ball, stadiumBorders, () => {});
+    this.scene.physics.add.collider(this.match.ball, stadiumBorders, () => {
+      this.borderSoundEffect.play();
+    });
   }
 }

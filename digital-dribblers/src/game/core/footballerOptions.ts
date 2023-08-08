@@ -64,7 +64,6 @@ export class FootbalerOptions {
   }
 
   makeAlongPass() {
-    // console.log("along pass");
     this.makeNextPass();
     this.desition = "pass";
   }

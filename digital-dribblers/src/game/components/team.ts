@@ -119,9 +119,11 @@ export class Team extends Phaser.GameObjects.Container {
       yoyo: true,
       duration: this.teamData.motionDuration,
     });
+    this.tween.seek(700);
   }
 
   stopMotion() {
+    if (this.tween === undefined) return;
     this.tween.pause();
   }
 

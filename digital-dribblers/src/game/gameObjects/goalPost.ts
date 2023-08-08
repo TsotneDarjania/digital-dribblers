@@ -51,6 +51,7 @@ export class GoalPost extends Phaser.GameObjects.Layer {
 
     this.leftLine = this.scene.physics.add
       .image(x, this.y - this.height / 2, "default")
+      .setImmovable(true)
       .setDisplaySize(this.width, this.stadaium.lineWidth);
   }
 
@@ -62,6 +63,7 @@ export class GoalPost extends Phaser.GameObjects.Layer {
 
     this.rightLine = this.scene.physics.add
       .image(x, this.y + this.height / 2, "default")
+      .setImmovable(true)
       .setDisplaySize(this.width, this.stadaium.lineWidth);
   }
 
