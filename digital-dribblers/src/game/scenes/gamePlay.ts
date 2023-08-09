@@ -1,9 +1,11 @@
 import { Stadium } from "../gameObjects/stadium";
 import { Team } from "../components/team";
 import { Match } from "../core/match";
+import { MenuButton } from "../components/buttons/menuButton";
 
 export class GamePlay extends Phaser.Scene {
   stadium!: Stadium;
+  match!: Match;
 
   constructor() {
     super("GamePlay");
@@ -36,7 +38,7 @@ export class GamePlay extends Phaser.Scene {
       passSpeed: 250,
     });
 
-    const match = new Match(this, georgia, france, this.stadium);
+    this.match = new Match(this, georgia, france, this.stadium);
   }
 
   addStadium() {

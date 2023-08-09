@@ -4,6 +4,7 @@ import Phaser from "phaser";
 import style from "./style.module.css";
 import { GamePlay } from "./scenes/gamePlay";
 import { Preload } from "./scenes/preload";
+import { Menu } from "./scenes/menu";
 
 const Game = () => {
   const canvasContainer = useRef(null);
@@ -25,8 +26,8 @@ const Game = () => {
         width: window.innerWidth,
         height: window.innerHeight,
       },
-      backgroundColor: 0x104a1b,
-      scene: [Preload, GamePlay],
+      backgroundColor: 0x184047,
+      scene: [Preload, Menu, GamePlay],
     });
 
     return () => game.destroy(true, false);

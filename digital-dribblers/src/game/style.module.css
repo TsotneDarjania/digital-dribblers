@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap");
+
 .canvasContainer {
   overflow: hidden;
   position: absolute;
@@ -5,4 +7,12 @@
   height: 100vh;
 
   background-color: rgb(19, 9, 21);
+}
+
+.asd {
+  background-color: red;
+}
+
+.asd :hover {
+  background-color: green;
 }

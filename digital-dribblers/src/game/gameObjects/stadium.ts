@@ -42,7 +42,41 @@ export class Stadium extends Phaser.GameObjects.Layer {
     this.addLeftGoalPost();
     this.addRightGoalPost();
 
+    this.addGrass();
     this.addVisualLines();
+  }
+
+  addGrass() {
+    this.graphics.setAlpha(1);
+    this.graphics.fillStyle(0x00b35f, 1);
+    this.graphics.fillRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
+
+    this.graphics.fillStyle(0x88d189, 1);
+    this.graphics.fillRect(
+      this.leftGoalPost.goalLine.x - this.leftGoalPost.leftLine.displayWidth,
+      this.y - this.leftGoalPost.goalLine.displayHeight / 2,
+      this.leftGoalPost.leftLine.displayWidth,
+      this.leftGoalPost.goalLine.displayHeight
+    );
+    this.graphics.fillRect(
+      this.rightGoalPost.goalLine.x,
+      this.y - this.leftGoalPost.goalLine.displayHeight / 2,
+      this.leftGoalPost.leftLine.displayWidth,
+      this.leftGoalPost.goalLine.displayHeight
+    );
+
+    this.graphics.fillStyle(0xfbf9f3, 1);
+    //center small Circle
+    this.graphics.fillCircle(
+      this.x,
+      this.y,
+      calculatePercentage(1.2, this.height)
+    );
   }
 
   addBorders() {
@@ -149,13 +183,6 @@ export class Stadium extends Phaser.GameObjects.Layer {
       this.x,
       this.y,
       calculatePercentage(13, this.height)
-    );
-
-    //center small Circle
-    this.graphics.fillCircle(
-      this.x,
-      this.y,
-      calculatePercentage(1.5, this.height)
     );
   }
 }

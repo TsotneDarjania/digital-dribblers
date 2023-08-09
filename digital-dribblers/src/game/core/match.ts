@@ -29,6 +29,9 @@ export class Match {
   setBallSoundEffect!: Phaser.Sound.BaseSound;
   shootSoundEffect!: Phaser.Sound.BaseSound;
 
+  hostTeamGoalKeeerTween!: Phaser.Tweens.Tween;
+  guestTeamGoalKeeerTween!: Phaser.Tweens.Tween;
+
   constructor(
     public scene: Phaser.Scene,
     public hotsTeam: Team,
@@ -100,7 +103,15 @@ export class Match {
       )
       .setVisible(false);
 
-    this.finishButton = new MenuButton(this.scene, 0, 0, "Finish");
+    this.finishButton = new MenuButton(this.scene, 0, 0, "Finish").on(
+      Phaser.Input.Events.POINTER_DOWN,
+      () => {
+        this.matchIndicators.stopTimer();
+        //most funny place in my code
+        this.scene.scene.scene.events.removeListener("update");
+        this.scene.scene.start("Menu");
+      }
+    );
 
     this.finishButton
       .setPosition(
@@ -142,6 +153,33 @@ export class Match {
   }
 
   start() {
+    this.guestTeamGoalKeeerTween = this.scene.tweens.add({
+      targets: this.guestTeam.goalKeeper,
+      duration: 1000,
+      repeat: -1,
+      yoyo: true,
+      y: {
+        from:
+          this.stadium.y - this.stadium.leftGoalPost.goalLine.displayHeight / 2,
+        to:
+          this.stadium.y + this.stadium.leftGoalPost.goalLine.displayHeight / 2,
+      },
+    });
+
+    this.hostTeamGoalKeeerTween = this.scene.tweens.add({
+      targets: this.hotsTeam.goalKeeper,
+      duration: 1000,
+      repeat: -1,
+      yoyo: true,
+      y: {
+        from:
+          this.stadium.y - this.stadium.leftGoalPost.goalLine.displayHeight / 2,
+        to:
+          this.stadium.y + this.stadium.leftGoalPost.goalLine.displayHeight / 2,
+      },
+    });
+    this.hostTeamGoalKeeerTween.pause();
+
     this.guestTeam.startMotion();
     this.teamWidhBall = this.hotsTeam;
     this.setBall(this.hotsTeam.goalKeeper);
@@ -159,6 +197,12 @@ export class Match {
       ? footballer.setBall(this.ball, "fromRight")
       : footballer.setBall(this.ball, "fromLeft");
 
+    if (footballer.footballerData.position === "goalKeeper") {
+      this.teamWidhBall === this.hotsTeam
+        ? this.hostTeamGoalKeeerTween.pause()
+        : this.guestTeamGoalKeeerTween.pause();
+    }
+
     this.footballerWithBall = footballer;
     this.makeDesition();
   }
@@ -172,6 +216,9 @@ export class Match {
 
     if (footbalerOption.desition === "pass") {
       setTimeout(() => {
+        this.hostTeamGoalKeeerTween.resume();
+        this.guestTeamGoalKeeerTween.resume();
+
         this.passSoundEffect.play();
         this.ballIsWithFootballer = false;
         this.footballerWithBall.makePass(
@@ -275,6 +322,9 @@ export class Match {
     this.ball.setVelocity(0, 0);
 
     if (this.stop) return;
+
+    this.hostTeamGoalKeeerTween.pause();
+    this.guestTeamGoalKeeerTween.pause();
     this.stop = true;
     this.refereeSoundEffect.play();
 
@@ -326,6 +376,9 @@ export class Match {
 
     this.hotsTeam.tween.seek(710);
     this.guestTeam.tween.seek(350);
+
+    this.hostTeamGoalKeeerTween.pause();
+    this.guestTeamGoalKeeerTween.pause();
   }
 
   finishMatch() {
@@ -341,5 +394,8 @@ export class Match {
 
     this.hotsTeam.tween.seek(710);
     this.guestTeam.tween.seek(350);
+
+    this.hostTeamGoalKeeerTween.pause();
+    this.guestTeamGoalKeeerTween.pause();
   }
 }
