@@ -1,3 +1,4 @@
+//@ts-ignore
 import WebFontFile from "../helper/webfontloader";
 
 export class Preload extends Phaser.Scene {
@@ -20,6 +21,7 @@ export class Preload extends Phaser.Scene {
     this.load.image("ball", "images/gameObjects/ball.png");
 
     this.load.image("button", "images/button.png");
+    this.load.image("formation-button", "images/formationButton.png");
 
     this.load.addFile(new WebFontFile(this.load, "Rubik Mono One"));
 

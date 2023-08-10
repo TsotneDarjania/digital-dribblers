@@ -15,7 +15,8 @@ export class Menu extends Phaser.Scene {
 
   tacticsButton!: MenuButton;
 
-  TacticsOptionModal!: TacticsOption;
+  yourTeamTacticsModal!: TacticsOption;
+  oponentTeamTacticsModal!: TacticsOption;
 
   constructor() {
     super("Menu");
@@ -28,32 +29,31 @@ export class Menu extends Phaser.Scene {
       this.game.canvas.height -
         calculatePercentage(10, this.game.canvas.height),
       "Tactics"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        this.yourTeamTacticsModal.setTitle(this.yourTeamText.node.innerHTML);
+        this.tacticsButton.setVisible(false);
+        this.yourTeamTacticsModal.setVisible(true);
 
-    this.TacticsOptionModal = new TacticsOption(
+        this.selectYourTeamButton.setVisible(false);
+        this.selectOponentTeamButton.setVisible(false);
+      });
+
+    this.yourTeamTacticsModal = new TacticsOption(
       this,
       this.game.canvas.width / 2,
-      this.game.canvas.height / 2
-    );
+      this.game.canvas.height / 2,
+      "yourTeam"
+    ).setVisible(false);
 
-    // new MenuButton(
-    //   this,
-    //   this.game.canvas.width / 2,
-    //   calculatePercentage(70, this.game.canvas.height),
-    //   "Start Match"
-    // )
-    //   .on(Phaser.Input.Events.POINTER_DOWN, () => {
-    //     this.scene.start("GamePlay");
-    //   })
-    //   .backgroundImage.setScale(2);
-    // this.selectTeamsButton = new MenuButton(
-    //   this,
-    //   this.game.canvas.width / 2,
-    //   this.game.canvas.height / 2,
-    //   "Select Teams"
-    // ).on(Phaser.Input.Events.POINTER_DOWN, () => {
-    //   this.scene.start("GamePlay");
-    // });
+    this.oponentTeamTacticsModal = new TacticsOption(
+      this,
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2,
+      "oponentTeam"
+    ).setVisible(false);
 
     //Your Team Text
     this.yourTeamText = this.add
