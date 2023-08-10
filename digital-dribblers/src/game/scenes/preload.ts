@@ -17,6 +17,28 @@ export class Preload extends Phaser.Scene {
     this.load.image("aston-flag", "images/flags/aston.png");
     this.load.image("arsenal-flag", "images/flags/arsenal.png");
 
+    //logos
+    this.load.image("arsenal", "images/logos/arsenal.png");
+    this.load.image("aston villa", "images/logos/aston-villa.png");
+    this.load.image("bournemouth", "images/logos/bournemouth.png");
+    this.load.image("brentford", "images/logos/brentford.png");
+    this.load.image("brighton", "images/logos/brighton.png");
+    this.load.image("burnley", "images/logos/burnley.png");
+    this.load.image("chelsea", "images/logos/chelsea.png");
+    this.load.image("crystal palace", "images/logos/crystal-palace.png");
+    this.load.image("everton", "images/logos/everton.png");
+    this.load.image("fulham", "images/logos/fulham.png");
+    this.load.image("liverpool", "images/logos/liverpool.png");
+    this.load.image("luton", "images/logos/luton.png");
+    this.load.image("manchester city", "images/logos/manchester-city.png");
+    this.load.image("manchester united", "images/logos/manchester-united.png");
+    this.load.image("new castle", "images/logos/new-castle.png");
+    this.load.image("nottingham", "images/logos/nottingham.png");
+    this.load.image("sheffield", "images/logos/sheffield.png");
+    this.load.image("tottenham", "images/logos/tottenham.png");
+    this.load.image("west ham", "images/logos/west-ham.png");
+    this.load.image("wolves", "images/logos/wolves.png");
+
     //gameObjects
     this.load.image("ball", "images/gameObjects/ball.png");
 

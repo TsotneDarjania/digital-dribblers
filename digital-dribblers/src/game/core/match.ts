@@ -155,7 +155,7 @@ export class Match {
   start() {
     this.guestTeamGoalKeeerTween = this.scene.tweens.add({
       targets: this.guestTeam.goalKeeper,
-      duration: 1000,
+      duration: this.guestTeam.teamData.goalKeeerSpeed,
       repeat: -1,
       yoyo: true,
       y: {
@@ -168,7 +168,7 @@ export class Match {
 
     this.hostTeamGoalKeeerTween = this.scene.tweens.add({
       targets: this.hotsTeam.goalKeeper,
-      duration: 1000,
+      duration: this.hotsTeam.teamData.goalKeeerSpeed,
       repeat: -1,
       yoyo: true,
       y: {
@@ -299,7 +299,15 @@ export class Match {
 
   addGoalEventListener() {
     this.scene.events.on("update", () => {
-      if (this.stop) this.ball.setVelocity(0, 0);
+      if (this.stop) {
+        this.guestTeam.stopMotion();
+        this.hotsTeam.stopMotion();
+
+        this.hostTeamGoalKeeerTween.pause();
+        this.guestTeamGoalKeeerTween.pause();
+
+        this.ball.setVelocity(0, 0);
+      }
       if (this.stop) return;
 
       if (
@@ -383,7 +391,6 @@ export class Match {
 
   finishMatch() {
     this.refereeSoundEffect.play();
-    this.stop = true;
     this.ball.setVelocity(0, 0);
     this.ball.setAlpha(0);
 
@@ -397,5 +404,7 @@ export class Match {
 
     this.hostTeamGoalKeeerTween.pause();
     this.guestTeamGoalKeeerTween.pause();
+
+    this.stop = true;
   }
 }

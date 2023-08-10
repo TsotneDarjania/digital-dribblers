@@ -80,10 +80,10 @@ export class OptionsBar extends Phaser.GameObjects.Container {
         gameObject.setPosition(clampedX, gameObject.y);
 
         // Update your logic here based on the new position (e.g., indicatorValue)
-        this.indicatorValue = ((clampedX - minX) / (maxX - minX)) * 100;
-        this.indicatorTextObject.setText(
-          Math.floor(this.indicatorValue).toString()
+        this.indicatorValue = Math.floor(
+          ((clampedX - minX) / (maxX - minX)) * 100
         );
+        this.indicatorTextObject.setText(this.indicatorValue.toString());
       }
     );
 

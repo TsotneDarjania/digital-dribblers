@@ -1,7 +1,7 @@
 import { Stadium } from "../gameObjects/stadium";
 import { Team } from "../components/team";
 import { Match } from "../core/match";
-import { MenuButton } from "../components/buttons/menuButton";
+import { gamePlayConig } from "../config/gamePlayConfig";
 
 export class GamePlay extends Phaser.Scene {
   stadium!: Stadium;
@@ -12,33 +12,37 @@ export class GamePlay extends Phaser.Scene {
   }
 
   create() {
+    console.log(gamePlayConig);
+
     this.addStadium();
 
-    const georgia = new Team(this, this.stadium, true, {
-      formation: [3, 4, 3],
-      key: "arsenal-flag",
-      name: "Arsenal",
-      motionDuration: 600,
-      passDelay: 300,
-      longPassChance: 20,
-      ballpossession: 0,
-      passInaccuracy: 10,
-      passSpeed: 320,
+    const yourTeam = new Team(this, this.stadium, true, {
+      formation: gamePlayConig.hostTeam.formation,
+      key: gamePlayConig.hostTeam.key,
+      name: gamePlayConig.hostTeam.name,
+      motionDuration: gamePlayConig.hostTeam.motionDuration,
+      passDelay: gamePlayConig.hostTeam.passDelay,
+      longPassChance: gamePlayConig.hostTeam.longPassChance,
+      ballpossession: gamePlayConig.hostTeam.ballPossession,
+      passInaccuracy: gamePlayConig.hostTeam.passInaccuracy,
+      passSpeed: gamePlayConig.hostTeam.passSpeed,
+      goalKeeerSpeed: gamePlayConig.hostTeam.goalKeeperSpeed,
     });
 
-    const france = new Team(this, this.stadium, false, {
-      formation: [4, 4, 2],
-      key: "aston-flag",
-      name: "Bornmount",
-      motionDuration: 500,
-      passDelay: 200,
-      longPassChance: 80,
-      ballpossession: 0,
-      passInaccuracy: 60,
-      passSpeed: 250,
+    const oponentTeam = new Team(this, this.stadium, false, {
+      formation: gamePlayConig.guestTeam.formation,
+      key: gamePlayConig.guestTeam.key,
+      name: gamePlayConig.guestTeam.name,
+      motionDuration: gamePlayConig.guestTeam.motionDuration,
+      passDelay: gamePlayConig.guestTeam.passDelay,
+      longPassChance: gamePlayConig.guestTeam.longPassChance,
+      ballpossession: gamePlayConig.guestTeam.ballPossession,
+      passInaccuracy: gamePlayConig.guestTeam.passInaccuracy,
+      passSpeed: gamePlayConig.guestTeam.passSpeed,
+      goalKeeerSpeed: gamePlayConig.guestTeam.goalKeeperSpeed,
     });
 
-    this.match = new Match(this, georgia, france, this.stadium);
+    this.match = new Match(this, yourTeam, oponentTeam, this.stadium);
   }
 
   addStadium() {

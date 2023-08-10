@@ -8,4 +8,5 @@ export interface TeamData {
   ballpossession: number;
   passInaccuracy: number;
   passSpeed: number;
+  goalKeeerSpeed: number;
 }

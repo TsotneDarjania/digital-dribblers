@@ -1,4 +1,5 @@
 import { calculatePercentage } from "../../../helper/tatukaMath";
+import { gamePlayConig } from "../../config/gamePlayConfig";
 import { Menu } from "../../scenes/menu";
 import { FormationButton } from "../buttons/formationButton";
 import { MenuButton } from "../buttons/menuButton";
@@ -9,6 +10,13 @@ export class TacticsOption extends Phaser.GameObjects.Container {
 
   options: Array<OptionsBar> = [];
   formationButtons: Array<FormationButton> = [];
+
+  passSpeedBar!: OptionsBar;
+  motionDurationBar!: OptionsBar;
+  passDelay!: OptionsBar;
+  longPassChance!: OptionsBar;
+  passAccuracy!: OptionsBar;
+  goalKeeperSpeed!: OptionsBar;
 
   constructor(scene: Phaser.Scene, x: number, y: number, public team: string) {
     super(scene, x, y);
@@ -34,7 +42,12 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       menuScene.oponentTeamTacticsModal.setTitle(
         menuScene.oponentTeamText.node.innerHTML
       );
+
+      //@ts-ignore
+      gamePlayConig.hostTeam.formation = formation;
     } else {
+      //@ts-ignore
+      gamePlayConig.guestTeam.formation = formation;
       this.scene.scene.start("GamePlay");
     }
   }
@@ -88,7 +101,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([3, 4, 3], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([3, 4, 2], false);
         }
       });
     this.formationButtons.push(formation_3_button);
@@ -106,7 +119,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([5, 4, 1], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([5, 4, 1], false);
         }
       });
     this.formationButtons.push(formation_4_button);
@@ -124,7 +137,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([5, 3, 2], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([5, 3, 2], false);
         }
       });
     this.formationButtons.push(formation_5_button);
@@ -142,7 +155,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([3, 5, 2], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([3, 5, 2], false);
         }
       });
     this.formationButtons.push(formation_6_button);
@@ -160,11 +173,24 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([3, 3, 4], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([3, 3, 4], false);
         }
       });
     this.formationButtons.push(formation_7_button);
     this.add(formation_7_button);
+  }
+
+  calculateTeamPharameter(value: number, min: number, max: number) {
+    // Make sure x is within the valid range of 0 to 100
+    if (value < 0) {
+      value = 0;
+    } else if (value > 100) {
+      value = 100;
+    }
+
+    // Interpolate
+    const speed = min + (max - min) * (value / 100);
+    return speed;
   }
 
   addselectFormationButton() {
@@ -174,6 +200,87 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       calculatePercentage(40, this.getBounds().height),
       "Formation"
     ).on(Phaser.Input.Events.POINTER_DOWN, () => {
+      const menuScene = this.scene as Menu;
+      if (this.team === "yourTeam") {
+        gamePlayConig.hostTeam.name = menuScene.yourTeamText.node.innerHTML;
+        gamePlayConig.hostTeam.key = menuScene.yourTeamText.node.innerHTML;
+
+        gamePlayConig.hostTeam.motionDuration = this.calculateTeamPharameter(
+          100 - this.motionDurationBar.indicatorValue,
+          450,
+          2000
+        );
+
+        gamePlayConig.hostTeam.passDelay = this.calculateTeamPharameter(
+          100 - this.passDelay.indicatorValue,
+          100,
+          900
+        );
+
+        gamePlayConig.hostTeam.longPassChance = this.calculateTeamPharameter(
+          this.longPassChance.indicatorValue,
+          0,
+          100
+        );
+
+        gamePlayConig.hostTeam.passInaccuracy = this.calculateTeamPharameter(
+          100 - this.passAccuracy.indicatorValue,
+          0,
+          100
+        );
+
+        gamePlayConig.hostTeam.passSpeed = this.calculateTeamPharameter(
+          this.passSpeedBar.indicatorValue,
+          220,
+          750
+        );
+
+        gamePlayConig.hostTeam.goalKeeperSpeed = this.calculateTeamPharameter(
+          100 - this.goalKeeperSpeed.indicatorValue,
+          500,
+          1200
+        );
+      } else {
+        gamePlayConig.guestTeam.name = menuScene.oponentTeamText.node.innerHTML;
+        gamePlayConig.guestTeam.key = menuScene.oponentTeamText.node.innerHTML;
+
+        gamePlayConig.guestTeam.motionDuration = this.calculateTeamPharameter(
+          100 - this.motionDurationBar.indicatorValue,
+          450,
+          2000
+        );
+
+        gamePlayConig.guestTeam.passDelay = this.calculateTeamPharameter(
+          100 - this.passDelay.indicatorValue,
+          100,
+          900
+        );
+
+        gamePlayConig.guestTeam.longPassChance = this.calculateTeamPharameter(
+          this.longPassChance.indicatorValue,
+          0,
+          100
+        );
+
+        gamePlayConig.guestTeam.passInaccuracy = this.calculateTeamPharameter(
+          100 - this.passAccuracy.indicatorValue,
+          0,
+          100
+        );
+
+        gamePlayConig.guestTeam.passSpeed = this.calculateTeamPharameter(
+          this.passSpeedBar.indicatorValue,
+          220,
+          750
+        );
+
+        gamePlayConig.guestTeam.goalKeeperSpeed = this.calculateTeamPharameter(
+          100 - this.goalKeeperSpeed.indicatorValue,
+          500,
+          1200
+        );
+      }
+
       this.options.forEach((option) => {
         option.setVisible(false);
         formationSelectButton.setVisible(false);
@@ -204,65 +311,65 @@ export class TacticsOption extends Phaser.GameObjects.Container {
   }
 
   addOptions() {
-    const passSpeedBar = new OptionsBar(
+    this.passSpeedBar = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(35, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
       "pass speed"
     );
-    this.options.push(passSpeedBar);
-    this.add(passSpeedBar);
+    this.options.push(this.passSpeedBar);
+    this.add(this.passSpeedBar);
 
-    const motionDurationBar = new OptionsBar(
+    this.motionDurationBar = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(23, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
-      "footballers speed"
+      "motion speed"
     );
-    this.options.push(motionDurationBar);
-    this.add(motionDurationBar);
+    this.options.push(this.motionDurationBar);
+    this.add(this.motionDurationBar);
 
-    const passDelay = new OptionsBar(
+    this.passDelay = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(11, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
       "high temp"
     );
-    this.options.push(passDelay);
-    this.add(passDelay);
+    this.options.push(this.passDelay);
+    this.add(this.passDelay);
 
-    const longPassChance = new OptionsBar(
+    this.longPassChance = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(-1, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
       "long passes"
     );
-    this.options.push(longPassChance);
-    this.add(longPassChance);
+    this.options.push(this.longPassChance);
+    this.add(this.longPassChance);
 
-    const passAccuracy = new OptionsBar(
+    this.passAccuracy = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(-13, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
       "pass accuracy"
     );
-    this.options.push(passAccuracy);
-    this.add(passAccuracy);
+    this.options.push(this.passAccuracy);
+    this.add(this.passAccuracy);
 
-    const goalKeeperSpeed = new OptionsBar(
+    this.goalKeeperSpeed = new OptionsBar(
       this.scene,
       -calculatePercentage(40, this.getBounds().width),
       -calculatePercentage(-26, this.getBounds().height),
       calculatePercentage(80, this.getBounds().width),
       "goalkeeper speed"
     );
-    this.options.push(goalKeeperSpeed);
-    this.add(goalKeeperSpeed);
+    this.options.push(this.goalKeeperSpeed);
+    this.add(this.goalKeeperSpeed);
   }
 
   addBackground() {

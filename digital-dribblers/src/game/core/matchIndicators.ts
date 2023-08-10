@@ -12,7 +12,7 @@ export class MatchIndicators {
 
   matchTime = 0;
   matchTimeText!: Phaser.GameObjects.Text;
-  interval!: number;
+  interval!: NodeJS.Timeout;
 
   constructor(
     public scene: Phaser.Scene,
