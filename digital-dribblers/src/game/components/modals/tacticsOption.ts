@@ -26,6 +26,19 @@ export class TacticsOption extends Phaser.GameObjects.Container {
     this.addselectFormationButton();
   }
 
+  clickFormation(formation: Array<number>, yourTeam: boolean) {
+    if (yourTeam) {
+      const menuScene = this.scene as Menu;
+      menuScene.yourTeamTacticsModal.setVisible(false);
+      menuScene.oponentTeamTacticsModal.setVisible(true);
+      menuScene.oponentTeamTacticsModal.setTitle(
+        menuScene.oponentTeamText.node.innerHTML
+      );
+    } else {
+      this.scene.scene.start("GamePlay");
+    }
+  }
+
   addFormations() {
     const formation_1_button = new FormationButton(
       this.scene,
@@ -37,12 +50,9 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       .setInteractive()
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
         if (this.team === "yourTeam") {
-          const menuScene = this.scene as Menu;
-          menuScene.yourTeamTacticsModal.setVisible(false);
-          menuScene.oponentTeamTacticsModal.setVisible(true);
-          menuScene.oponentTeamTacticsModal.setTitle(
-            menuScene.oponentTeamText.node.innerHTML
-          );
+          this.clickFormation([4, 4, 2], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
         }
       });
     this.formationButtons.push(formation_1_button);
@@ -53,7 +63,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       -calculatePercentage(25, this.getBounds().height),
       "4-3-3"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([4, 3, 3], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_2_button);
     this.add(formation_2_button);
 
@@ -62,7 +81,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       -calculatePercentage(15, this.getBounds().height),
       "3-4-3"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([3, 4, 3], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_3_button);
     this.add(formation_3_button);
 
@@ -71,7 +99,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       -calculatePercentage(5, this.getBounds().height),
       "5-4-1"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([5, 4, 1], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_4_button);
     this.add(formation_4_button);
 
@@ -80,7 +117,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       +calculatePercentage(5, this.getBounds().height),
       "5-3-2"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([5, 3, 2], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_5_button);
     this.add(formation_5_button);
 
@@ -89,7 +135,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       +calculatePercentage(15, this.getBounds().height),
       "3-5-2"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([3, 5, 2], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_6_button);
     this.add(formation_6_button);
 
@@ -98,7 +153,16 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       0,
       +calculatePercentage(25, this.getBounds().height),
       "3-3-4"
-    ).setVisible(false);
+    )
+      .setVisible(false)
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (this.team === "yourTeam") {
+          this.clickFormation([3, 3, 4], true);
+        } else {
+          this.clickFormation([4, 4, 2], false);
+        }
+      });
     this.formationButtons.push(formation_7_button);
     this.add(formation_7_button);
   }
