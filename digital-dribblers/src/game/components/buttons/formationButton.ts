@@ -1,3 +1,5 @@
+import { screenSize } from "../../config/layoutConfig";
+
 export class FormationButton extends Phaser.GameObjects.Container {
   backgroundImage!: Phaser.GameObjects.Image;
 
@@ -24,7 +26,10 @@ export class FormationButton extends Phaser.GameObjects.Container {
     this.backgroundImage = this.scene.add
       .image(0, 0, "formation-button")
       .setTint(0x06070d)
-      .setDisplaySize(200, 80);
+      .setDisplaySize(
+        screenSize().menu.formationButton.width,
+        screenSize().menu.formationButton.height
+      );
 
     this.add(this.backgroundImage);
   }

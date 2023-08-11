@@ -1,5 +1,6 @@
 import { calculatePercentage } from "../../../helper/tatukaMath";
 import { gamePlayConig } from "../../config/gamePlayConfig";
+import { screenSize } from "../../config/layoutConfig";
 import { Menu } from "../../scenes/menu";
 import { FormationButton } from "../buttons/formationButton";
 import { MenuButton } from "../buttons/menuButton";
@@ -376,8 +377,14 @@ export class TacticsOption extends Phaser.GameObjects.Container {
     const background = this.scene.add
       .image(0, 0, "default")
       .setDisplaySize(
-        calculatePercentage(40, this.scene.game.canvas.width),
-        calculatePercentage(80, this.scene.game.canvas.height)
+        calculatePercentage(
+          screenSize().menu.tacticsOption.background.width,
+          this.scene.game.canvas.width
+        ),
+        calculatePercentage(
+          screenSize().menu.tacticsOption.background.height,
+          this.scene.game.canvas.height
+        )
       )
       .setTint(0xf2f2ff);
 

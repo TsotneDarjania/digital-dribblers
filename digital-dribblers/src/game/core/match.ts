@@ -74,9 +74,8 @@ export class Match {
 
     this.continueButton
       .setPosition(
-        this.scene.game.canvas.width / 2 -
-          this.continueButton.getBounds().width / 2,
-        this.scene.game.canvas.height - this.continueButton.getBounds().height
+        this.scene.game.canvas.width / 2,
+        this.scene.game.canvas.height / 2
       )
       .setVisible(false)
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
@@ -89,19 +88,19 @@ export class Match {
 
         this.refereeSoundEffect.play();
 
-        this.tacticsButton.setVisible(false);
+        // this.tacticsButton.setVisible(false);
         this.continueButton.setVisible(false);
       });
 
-    this.tacticsButton = new MenuButton(this.scene, 0, 0, "Tactics");
+    // this.tacticsButton = new MenuButton(this.scene, 0, 0, "Tactics");
 
-    this.tacticsButton
-      .setPosition(
-        this.scene.game.canvas.width / 2 +
-          this.tacticsButton.getBounds().width / 2,
-        this.scene.game.canvas.height - this.tacticsButton.getBounds().height
-      )
-      .setVisible(false);
+    // this.tacticsButton
+    //   .setPosition(
+    //     this.scene.game.canvas.width / 2 +
+    //       this.tacticsButton.getBounds().width / 2,
+    //     this.scene.game.canvas.height - this.tacticsButton.getBounds().height
+    //   )
+    //   .setVisible(false);
 
     this.finishButton = new MenuButton(this.scene, 0, 0, "Finish").on(
       Phaser.Input.Events.POINTER_DOWN,
@@ -116,7 +115,7 @@ export class Match {
     this.finishButton
       .setPosition(
         this.scene.game.canvas.width / 2,
-        this.scene.game.canvas.height - this.finishButton.getBounds().height
+        this.scene.game.canvas.height / 2
       )
       .setVisible(false);
 
@@ -125,7 +124,7 @@ export class Match {
     this.startMatchButton
       .setPosition(
         this.scene.game.canvas.width / 2,
-        this.scene.game.canvas.height - this.startMatchButton.getBounds().height
+        this.scene.game.canvas.height / 2
       )
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
         this.startMatchButton.setVisible(false);
@@ -138,9 +137,9 @@ export class Match {
   }
 
   addBall() {
-    this.ball = new Ball(this.scene, this.stadium.x, this.stadium.y).setScale(
-      calculatePercentage(0.06, this.stadium.width)
-    );
+    this.ball = new Ball(this.scene, this.stadium.x, this.stadium.y)
+      .setScale(calculatePercentage(0.06, this.stadium.width))
+      .setVisible(false);
   }
 
   addInticators() {
@@ -153,6 +152,7 @@ export class Match {
   }
 
   start() {
+    this.ball.setVisible(true);
     this.guestTeamGoalKeeerTween = this.scene.tweens.add({
       targets: this.guestTeam.goalKeeper,
       duration: this.guestTeam.teamData.goalKeeerSpeed,
@@ -388,7 +388,7 @@ export class Match {
     this.ball.setVelocity(0, 0);
     this.ball.setAlpha(0);
 
-    this.tacticsButton.setVisible(true);
+    // this.tacticsButton.setVisible(true);
     this.continueButton.setVisible(true);
 
     this.hotsTeam.tween.pause();

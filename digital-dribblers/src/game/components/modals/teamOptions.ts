@@ -1,4 +1,5 @@
 import { calculatePercentage } from "../../../helper/tatukaMath";
+import { screenSize } from "../../config/layoutConfig";
 import { TeamsData } from "../../data/teamsData";
 import { Menu } from "../../scenes/menu";
 
@@ -14,7 +15,9 @@ export class TeamOptionsModal extends Phaser.GameObjects.DOMElement {
       x,
       y,
       "div",
-      "width : 20vw; height : 80vh;  overflow-y: scroll;border: 9px solid #565759"
+      `width : ${screenSize().menu.teamOptions.width}vw; height :  ${
+        screenSize().menu.teamOptions.height
+      }vh;  overflow-y: scroll;border: 9px solid #565759`
     );
     // background-color : #7EAADE; border: 5px solid #445C78;
     scene.add.existing(this);
@@ -88,10 +91,15 @@ export class TeamOptionsModal extends Phaser.GameObjects.DOMElement {
 
     const name = this.scene.add
       .dom(
-        calculatePercentage(16, this.displayWidth),
+        logo.x +
+          logo.displayWidth / 2 +
+          calculatePercentage(30, logo.displayWidth),
         calculatePercentage(50, item.displayHeight),
         "p",
-        " text-elign: left; color : white; font-family: 'IBM Plex Mono', monospace; font-size : 20px;",
+        ` text-elign: left; color : white; font-family: 'IBM Plex Mono', monospace; font-size : ${calculatePercentage(
+          5,
+          this.displayWidth
+        )}px;`,
         nameText
       )
       .setOrigin(0, 0.5);

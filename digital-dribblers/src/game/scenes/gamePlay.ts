@@ -2,6 +2,7 @@ import { Stadium } from "../gameObjects/stadium";
 import { Team } from "../components/team";
 import { Match } from "../core/match";
 import { gamePlayConig } from "../config/gamePlayConfig";
+import { screenSize } from "../config/layoutConfig";
 
 export class GamePlay extends Phaser.Scene {
   stadium!: Stadium;
@@ -50,8 +51,8 @@ export class GamePlay extends Phaser.Scene {
       this,
       this.game.canvas.width / 2,
       this.game.canvas.height / 2,
-      870,
-      500
+      screenSize().gamePlay.stadium.width,
+      screenSize().gamePlay.stadium.height
     );
   }
 }

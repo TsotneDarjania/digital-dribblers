@@ -1,3 +1,5 @@
+import { screenSize } from "../../config/layoutConfig";
+
 export class MenuButton extends Phaser.GameObjects.Container {
   backgroundImage!: Phaser.GameObjects.Image;
 
@@ -23,7 +25,10 @@ export class MenuButton extends Phaser.GameObjects.Container {
   addBacgrkoundImage() {
     this.backgroundImage = this.scene.add
       .image(0, 0, "button")
-      .setDisplaySize(180, 150)
+      .setDisplaySize(
+        screenSize().menu.menuButton.width,
+        screenSize().menu.menuButton.height
+      )
       .setTint(0x170933);
 
     this.add(this.backgroundImage);
@@ -33,7 +38,7 @@ export class MenuButton extends Phaser.GameObjects.Container {
     const text = this.scene.add
       .text(0, 0, this.innerText, {
         align: "center",
-        fontSize: 18,
+        fontSize: screenSize().menu.menuButton.fontSize,
         color: "#65D7FF",
         fontFamily: "Rubik Mono One",
       })

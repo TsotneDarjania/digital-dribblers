@@ -1,4 +1,5 @@
 import { calculatePercentage } from "../../helper/tatukaMath";
+import { screenSize } from "../config/layoutConfig";
 import { Match } from "./match";
 
 export class MatchIndicators {
@@ -32,7 +33,7 @@ export class MatchIndicators {
       .text(0, 0, `${this.hostTeamName}`, {
         align: "rigth",
         fontFamily: "Rubik Mono One",
-        fontSize: 30,
+        fontSize: screenSize().gamePlay.hostTeamText.fontSize,
       })
       .setOrigin(1, 0.5);
 
@@ -46,7 +47,7 @@ export class MatchIndicators {
       .text(0, 0, `${this.guestTeamName}   `, {
         align: "left",
         fontFamily: "Rubik Mono One",
-        fontSize: 30,
+        fontSize: screenSize().gamePlay.hostTeamText.fontSize,
       })
       .setOrigin(0, 0.5);
 
@@ -64,7 +65,7 @@ export class MatchIndicators {
         {
           align: "center",
           fontFamily: "Rubik Mono One",
-          fontSize: 30,
+          fontSize: screenSize().gamePlay.hostTeamText.fontSize,
         }
       )
       .setOrigin(0.5);

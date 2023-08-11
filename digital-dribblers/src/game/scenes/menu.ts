@@ -2,6 +2,7 @@ import { calculatePercentage } from "../../helper/tatukaMath";
 import { MenuButton } from "../components/buttons/menuButton";
 import { TacticsOption } from "../components/modals/tacticsOption";
 import { TeamOptionsModal } from "../components/modals/teamOptions";
+import { screenSize } from "../config/layoutConfig";
 
 export class Menu extends Phaser.Scene {
   selectYourTeamButton!: Phaser.GameObjects.DOMElement;
@@ -35,7 +36,10 @@ export class Menu extends Phaser.Scene {
       this,
       this.game.canvas.width / 2,
       this.game.canvas.height -
-        calculatePercentage(10, this.game.canvas.height),
+        calculatePercentage(
+          screenSize().menu.tacticsButton.y,
+          this.game.canvas.height
+        ),
       "Tactics"
     )
       .setVisible(false)
@@ -47,6 +51,10 @@ export class Menu extends Phaser.Scene {
 
         this.selectYourTeamButton.setVisible(false);
         this.selectOponentTeamButton.setVisible(false);
+
+        this.yourTeamText.setVisible(false);
+        this.oponentTeamText.setVisible(false);
+        vsText.setVisible(false);
       });
 
     this.yourTeamTacticsModal = new TacticsOption(
@@ -86,7 +94,7 @@ export class Menu extends Phaser.Scene {
       .setOrigin(1, 0);
 
     //VS text
-    this.add
+    const vsText = this.add
       .dom(
         this.game.canvas.width / 2,
         0,
@@ -102,14 +110,20 @@ export class Menu extends Phaser.Scene {
         0,
         0,
         "button",
-        " cursor : pointer; width : 270px; height : 90px; background-color: #5F6163; font-family: 'IBM Plex Mono', monospace;" +
-          "font-size: 26px; border: 6px solid #313233; color: #B8BABF",
+        `cursor : pointer; width : ${
+          screenSize().menu.selectOponentTeamButton.width
+        }px; height : ${
+          screenSize().menu.selectOponentTeamButton.height
+        }px; background-color: #5F6163; font-family: IBM Plex Mono, monospace; 
+          font-size: ${
+            screenSize().menu.selectOponentTeamButton.fontSize
+          }px; border:6px solid #313233; color: #B8BABF;`,
         "Select Your Team"
       )
       .setOrigin(0)
       .setInteractive()
       .addListener("click")
-      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+      .on("click", () => {
         this.yourTeamsOptions.visible
           ? this.yourTeamsOptions.setVisible(false)
           : this.yourTeamsOptions.setVisible(true);
@@ -126,14 +140,20 @@ export class Menu extends Phaser.Scene {
         0,
         0,
         "button",
-        " cursor : pointer; width : 270px; height : 90px; background-color: #5F6163; font-family: 'IBM Plex Mono', monospace;" +
-          "font-size: 26px; border: 6px solid #313233; color: #B8BABF",
-        "Select Oponent"
+        `cursor : pointer; width : ${
+          screenSize().menu.selectOponentTeamButton.width
+        }px; height : ${
+          screenSize().menu.selectOponentTeamButton.height
+        }px; background-color: #5F6163; font-family: IBM Plex Mono, monospace; 
+          font-size: ${
+            screenSize().menu.selectOponentTeamButton.fontSize
+          }px; border:6px solid #313233; color: #B8BABF;`,
+        "Select Oponen"
       )
       .setOrigin(0)
       .setInteractive()
       .addListener("click")
-      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+      .on("click", () => {
         this.oponentTeamsOptions.visible
           ? this.oponentTeamsOptions.setVisible(false)
           : this.oponentTeamsOptions.setVisible(true);
@@ -147,15 +167,21 @@ export class Menu extends Phaser.Scene {
     );
 
     this.yourTeamsOptions = new TeamOptionsModal(this, 0, 0, true);
-    this.yourTeamsOptions.setPosition(
-      this.game.canvas.width / 2 - this.yourTeamsOptions.displayWidth,
+    this.yourTeamsOptions.setPosition(0, this.game.canvas.height / 2);
+
+    this.oponentTeamsOptions = new TeamOptionsModal(
+      this,
+      0,
+      0,
+      false
+    ).setOrigin(1.02, 0.5);
+    this.oponentTeamsOptions.setPosition(
+      this.game.canvas.width,
       this.game.canvas.height / 2
     );
 
-    this.oponentTeamsOptions = new TeamOptionsModal(this, 0, 0, false);
-    this.oponentTeamsOptions.setPosition(
-      this.game.canvas.width / 2,
-      this.game.canvas.height / 2
-    );
+    window.onresize = () => {
+      this.scene.restart();
+    };
   }
 }

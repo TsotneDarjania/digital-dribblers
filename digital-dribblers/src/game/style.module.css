@@ -9,10 +9,37 @@
   background-color: rgb(19, 9, 21);
 }
 
-.asd {
-  background-color: red;
+.orientationWarning {
+  z-index: 1000 !important;
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgb(21, 21, 21);
+  text-align: center;
 }
 
-.asd :hover {
-  background-color: green;
+.orientationWarning h1 {
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgb(21, 21, 21);
+
+  position: absolute;
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 0;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+
+  font-size: 20px;
+
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
 }

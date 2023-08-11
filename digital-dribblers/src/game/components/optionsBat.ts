@@ -1,3 +1,5 @@
+import { screenSize } from "../config/layoutConfig";
+
 export class OptionsBar extends Phaser.GameObjects.Container {
   indicator!: Phaser.GameObjects.Image;
 
@@ -25,21 +27,26 @@ export class OptionsBar extends Phaser.GameObjects.Container {
 
   addTexts() {
     this.indicatorTextObject = this.scene.add
-      .text(this.width / 2, -40, this.indicatorValue.toString(), {
-        align: "ceter",
-        color: "#A00CF0",
-        fontSize: 20,
-        fontFamily: "Rubik Mono One",
-      })
+      .text(
+        this.width / 2 + screenSize().menu.optionsBar.indicatorTextobject.x,
+        screenSize().menu.optionsBar.indicatorTextobject.y,
+        this.indicatorValue.toString(),
+        {
+          align: "ceter",
+          color: "#A00CF0",
+          fontSize: screenSize().menu.optionsBar.indicatorTextobject.fontSize,
+          fontFamily: "Rubik Mono One",
+        }
+      )
       .setOrigin(0.5);
 
     this.add(this.indicatorTextObject);
 
     const optionText = this.scene.add
-      .text(0, -40, this.opttionName, {
+      .text(0, -screenSize().menu.optionsBar.oprionText.y, this.opttionName, {
         align: "left",
         color: "#A00CF0",
-        fontSize: 15,
+        fontSize: screenSize().menu.optionsBar.oprionText.fontSize,
         fontFamily: "Rubik Mono One",
       })
       .setOrigin(0);
@@ -50,7 +57,10 @@ export class OptionsBar extends Phaser.GameObjects.Container {
   addBackground() {
     const background = this.scene.add
       .image(0, 0, "default")
-      .setDisplaySize(this.width, 20)
+      .setDisplaySize(
+        this.width,
+        screenSize().menu.optionsBar.background.height
+      )
       .setOrigin(0, 0.5)
       .setTint(0x292929);
     this.add(background);
@@ -59,7 +69,10 @@ export class OptionsBar extends Phaser.GameObjects.Container {
   addIndicator() {
     this.indicator = this.scene.add
       .image(0, 0, "default")
-      .setDisplaySize(40, 40)
+      .setDisplaySize(
+        screenSize().menu.optionsBar.indicator.width,
+        screenSize().menu.optionsBar.indicator.width
+      )
       .setTint(0xa00cf0)
       .setOrigin(0.5)
       .setInteractive({ draggable: true });
