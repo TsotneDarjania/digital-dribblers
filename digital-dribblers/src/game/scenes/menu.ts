@@ -55,6 +55,10 @@ export class Menu extends Phaser.Scene {
         this.yourTeamText.setVisible(false);
         this.oponentTeamText.setVisible(false);
         vsText.setVisible(false);
+
+        if (this.scale.isFullscreen === false) {
+          this.scale.startFullscreen();
+        }
       });
 
     this.yourTeamTacticsModal = new TacticsOption(
@@ -127,6 +131,10 @@ export class Menu extends Phaser.Scene {
         this.yourTeamsOptions.visible
           ? this.yourTeamsOptions.setVisible(false)
           : this.yourTeamsOptions.setVisible(true);
+
+        if (this.scale.isFullscreen === false) {
+          this.scale.startFullscreen();
+        }
       });
 
     this.selectYourTeamButton.setPosition(
@@ -157,6 +165,10 @@ export class Menu extends Phaser.Scene {
         this.oponentTeamsOptions.visible
           ? this.oponentTeamsOptions.setVisible(false)
           : this.oponentTeamsOptions.setVisible(true);
+
+        if (this.scale.isFullscreen === false) {
+          this.scale.startFullscreen();
+        }
       });
 
     this.selectOponentTeamButton.setPosition(
@@ -181,7 +193,9 @@ export class Menu extends Phaser.Scene {
     );
 
     window.onresize = () => {
-      this.scene.restart();
+      setTimeout(() => {
+        this.scene.restart();
+      }, 2000);
     };
   }
 }
