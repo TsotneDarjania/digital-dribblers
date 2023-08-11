@@ -34,6 +34,7 @@ export class CollisionDetection {
     });
 
     this.scene.physics.add.overlap(this.match.ball, allFootballers, (a, b) => {
+      console.log(a);
       const footballer = b as Footballer;
       this.match.ballTouchFootballer(footballer);
     });

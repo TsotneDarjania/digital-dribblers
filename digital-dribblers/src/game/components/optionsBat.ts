@@ -82,6 +82,12 @@ export class OptionsBar extends Phaser.GameObjects.Container {
       (pointer: any, gameObject: any, dragX: any, dragY: any) => {
         // Calculate the boundaries for the indicator's motion
 
+        //for typescrippt error
+        if (1 > 100) {
+          console.log(pointer);
+          console.log(dragY);
+        }
+
         if (gameObject !== this.indicator) return;
         const minX = 0;
         const maxX = this.width;
