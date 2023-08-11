@@ -84,6 +84,7 @@ const Game = () => {
         },
       },
       parent: canvasContainer.current,
+      fullscreenTarget: canvasContainer.current,
       type: Phaser.AUTO,
       scale: {
         mode: Phaser.Scale.NONE,
