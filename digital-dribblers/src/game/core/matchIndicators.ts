@@ -92,7 +92,7 @@ export class MatchIndicators {
         this.match.halfTimeisOver();
         this.stopTimer();
       }
-    }, 2000);
+    }, 1500);
   }
 
   resumeTimer() {
@@ -104,7 +104,7 @@ export class MatchIndicators {
         this.match.finishMatch();
         this.stopTimer();
       }
-    }, 2000);
+    }, 1500);
   }
 
   stopTimer() {

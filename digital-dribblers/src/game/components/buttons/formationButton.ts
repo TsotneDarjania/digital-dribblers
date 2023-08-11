@@ -23,7 +23,7 @@ export class FormationButton extends Phaser.GameObjects.Container {
   addBacgrkoundImage() {
     this.backgroundImage = this.scene.add
       .image(0, 0, "formation-button")
-      .setTint(0xf2f5fc)
+      .setTint(0x06070d)
       .setDisplaySize(200, 80);
 
     this.add(this.backgroundImage);
@@ -34,7 +34,7 @@ export class FormationButton extends Phaser.GameObjects.Container {
       .text(0, 0, this.innerText, {
         align: "center",
         fontSize: 22,
-        color: "#06070D",
+        color: "#D3D5DB",
         fontFamily: "Rubik Mono One",
       })
       .setOrigin(0.5);
@@ -53,10 +53,10 @@ export class FormationButton extends Phaser.GameObjects.Container {
       Phaser.Geom.Rectangle.Contains
     );
     this.on(Phaser.Input.Events.POINTER_OVER, () => {
-      this.backgroundImage.setTint(0xf26e2c);
+      this.backgroundImage.setTint(0x737478);
     });
     this.on(Phaser.Input.Events.POINTER_OUT, () => {
-      this.backgroundImage.setTint(0xf2f5fc);
+      this.backgroundImage.setTint(0x06070d);
     });
     this.input!.cursor = "pointer";
   }

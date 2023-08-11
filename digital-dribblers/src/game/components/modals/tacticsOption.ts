@@ -83,7 +83,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([4, 3, 3], true);
         } else {
-          this.clickFormation([4, 4, 2], false);
+          this.clickFormation([4, 3, 3], false);
         }
       });
     this.formationButtons.push(formation_2_button);
@@ -101,7 +101,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
         if (this.team === "yourTeam") {
           this.clickFormation([3, 4, 3], true);
         } else {
-          this.clickFormation([3, 4, 2], false);
+          this.clickFormation([3, 4, 3], false);
         }
       });
     this.formationButtons.push(formation_3_button);
@@ -207,7 +207,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
 
         gamePlayConig.hostTeam.motionDuration = this.calculateTeamPharameter(
           100 - this.motionDurationBar.indicatorValue,
-          450,
+          280,
           2000
         );
 
@@ -231,13 +231,13 @@ export class TacticsOption extends Phaser.GameObjects.Container {
 
         gamePlayConig.hostTeam.passSpeed = this.calculateTeamPharameter(
           this.passSpeedBar.indicatorValue,
-          220,
-          750
+          150,
+          500
         );
 
         gamePlayConig.hostTeam.goalKeeperSpeed = this.calculateTeamPharameter(
           100 - this.goalKeeperSpeed.indicatorValue,
-          500,
+          300,
           1200
         );
       } else {
@@ -246,7 +246,7 @@ export class TacticsOption extends Phaser.GameObjects.Container {
 
         gamePlayConig.guestTeam.motionDuration = this.calculateTeamPharameter(
           100 - this.motionDurationBar.indicatorValue,
-          450,
+          280,
           2000
         );
 
@@ -270,13 +270,13 @@ export class TacticsOption extends Phaser.GameObjects.Container {
 
         gamePlayConig.guestTeam.passSpeed = this.calculateTeamPharameter(
           this.passSpeedBar.indicatorValue,
-          220,
-          750
+          150,
+          500
         );
 
         gamePlayConig.guestTeam.goalKeeperSpeed = this.calculateTeamPharameter(
           100 - this.goalKeeperSpeed.indicatorValue,
-          500,
+          300,
           1200
         );
       }
@@ -378,7 +378,8 @@ export class TacticsOption extends Phaser.GameObjects.Container {
       .setDisplaySize(
         calculatePercentage(40, this.scene.game.canvas.width),
         calculatePercentage(80, this.scene.game.canvas.height)
-      );
+      )
+      .setTint(0xf2f2ff);
 
     this.add(background);
   }

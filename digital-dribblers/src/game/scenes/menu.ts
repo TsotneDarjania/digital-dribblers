@@ -23,6 +23,14 @@ export class Menu extends Phaser.Scene {
   }
 
   create() {
+    //background color
+    this.add
+      .image(0, 0, "default")
+      .setDisplaySize(this.game.canvas.width, this.game.canvas.height)
+      .setOrigin(0)
+      .setTint(0x222324)
+      .setDepth(-10);
+
     this.tacticsButton = new MenuButton(
       this,
       this.game.canvas.width / 2,
@@ -61,7 +69,7 @@ export class Menu extends Phaser.Scene {
         0,
         0,
         "p",
-        "font-family: 'IBM Plex Mono', monospace; font-size : 40px; color : #EBCD73; text-align: left; width : 1000px;",
+        "font-family: 'IBM Plex Mono', monospace; font-size : 40px; color : white; text-align: left; width : 1000px;",
         ""
       )
       .setOrigin(0);
@@ -72,7 +80,7 @@ export class Menu extends Phaser.Scene {
         this.game.canvas.width,
         0,
         "p",
-        "font-family: 'IBM Plex Mono', monospace; font-size : 40px; color : #EBCD73; text-align: right;",
+        "font-family: 'IBM Plex Mono', monospace; font-size : 40px; color : white; text-align: right;",
         ""
       )
       .setOrigin(1, 0);
@@ -94,8 +102,8 @@ export class Menu extends Phaser.Scene {
         0,
         0,
         "button",
-        " cursor : pointer; width : 270px; height : 90px; background-color: #E7FFE3; font-family: 'IBM Plex Mono', monospace;" +
-          "font-size: 26px; border: 6px solid #A6B8A3; color: #2E332D",
+        " cursor : pointer; width : 270px; height : 90px; background-color: #5F6163; font-family: 'IBM Plex Mono', monospace;" +
+          "font-size: 26px; border: 6px solid #313233; color: #B8BABF",
         "Select Your Team"
       )
       .setOrigin(0)
@@ -118,8 +126,8 @@ export class Menu extends Phaser.Scene {
         0,
         0,
         "button",
-        " cursor : pointer; width : 270px; height : 90px; background-color: #E7FFE3; font-family: 'IBM Plex Mono', monospace;" +
-          "font-size: 26px; border: 6px solid #A6B8A3; color: #2E332D",
+        " cursor : pointer; width : 270px; height : 90px; background-color: #5F6163; font-family: 'IBM Plex Mono', monospace;" +
+          "font-size: 26px; border: 6px solid #313233; color: #B8BABF",
         "Select Oponent"
       )
       .setOrigin(0)

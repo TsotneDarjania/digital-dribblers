@@ -14,7 +14,7 @@ export class TeamOptionsModal extends Phaser.GameObjects.DOMElement {
       x,
       y,
       "div",
-      "width : 20vw; height : 80vh;  overflow-y: scroll;border: 5px solid #445C78;"
+      "width : 20vw; height : 80vh;  overflow-y: scroll;border: 9px solid #565759"
     );
     // background-color : #7EAADE; border: 5px solid #445C78;
     scene.add.existing(this);
@@ -65,15 +65,15 @@ export class TeamOptionsModal extends Phaser.GameObjects.DOMElement {
 
     item.node.setAttribute(
       "onMouseOver",
-      " this.style.backgroundColor = 'green'"
+      " this.style.backgroundColor = '#6E7073'"
     );
     item.node.setAttribute(
       "onMouseOut",
-      " this.style.backgroundColor = '#0C2042'"
+      " this.style.backgroundColor = '#565759'"
     );
     item.node.setAttribute(
       "style",
-      " width : 100%; height : 80px; background-color: #0C2042; cursor : pointer;  "
+      " width : 100%; height : 80px; background-color: #565759; cursor : pointer;  "
     );
 
     const logo = this.scene.add.dom(

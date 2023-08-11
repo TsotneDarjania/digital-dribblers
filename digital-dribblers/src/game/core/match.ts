@@ -346,6 +346,12 @@ export class Match {
   }
 
   reset(team: string) {
+    if (
+      this.matchIndicators.matchTime === 45 ||
+      this.matchIndicators.matchTime >= 90
+    )
+      return;
+
     if (team === "host") {
       this.hotsTeam.startMotion();
       this.teamWidhBall = this.guestTeam;
@@ -365,6 +371,12 @@ export class Match {
     this.ball.setAlpha(1);
 
     setTimeout(() => {
+      if (team === "host") {
+        this.hotsTeam.startMotion();
+      } else {
+        this.guestTeam.startMotion();
+      }
+
       this.stop = false;
       this.makeDesition();
     }, 1000);
