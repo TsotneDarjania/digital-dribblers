@@ -1,13 +1,11 @@
+import { Stadium } from "../gameObjects/stadium";
 import { Team } from "../components/team";
 import { Match } from "../core/match";
-import { Stadium } from "../gameObjects/stadium";
+import { gamePlayConig } from "../config/gamePlayConfig";
+import { screenSize } from "../config/layoutConfig";
 
 export class GamePlay extends Phaser.Scene {
-  screenWidth!: number;
-  screenHeight!: number;
-
   stadium!: Stadium;
-
   match!: Match;
 
   constructor() {
@@ -15,24 +13,46 @@ export class GamePlay extends Phaser.Scene {
   }
 
   create() {
-    this.screenWidth = this.game.canvas.width;
-    this.screenHeight = this.game.canvas.height;
+    console.log(gamePlayConig);
 
-    this.drawStadium();
+    this.addStadium();
 
-    this.match = new Match(this, [
-      new Team(this, { formation: [4, 4, 2], flag: "georgia-flag" }, false),
-      new Team(this, { formation: [4, 3, 3], flag: "france-flag" }, true),
-    ]);
+    const yourTeam = new Team(this, this.stadium, true, {
+      formation: gamePlayConig.hostTeam.formation,
+      key: gamePlayConig.hostTeam.key,
+      name: gamePlayConig.hostTeam.name,
+      motionDuration: gamePlayConig.hostTeam.motionDuration,
+      passDelay: gamePlayConig.hostTeam.passDelay,
+      longPassChance: gamePlayConig.hostTeam.longPassChance,
+      ballpossession: gamePlayConig.hostTeam.ballPossession,
+      passInaccuracy: gamePlayConig.hostTeam.passInaccuracy,
+      passSpeed: gamePlayConig.hostTeam.passSpeed,
+      goalKeeerSpeed: gamePlayConig.hostTeam.goalKeeperSpeed,
+    });
+
+    const oponentTeam = new Team(this, this.stadium, false, {
+      formation: gamePlayConig.guestTeam.formation,
+      key: gamePlayConig.guestTeam.key,
+      name: gamePlayConig.guestTeam.name,
+      motionDuration: gamePlayConig.guestTeam.motionDuration,
+      passDelay: gamePlayConig.guestTeam.passDelay,
+      longPassChance: gamePlayConig.guestTeam.longPassChance,
+      ballpossession: gamePlayConig.guestTeam.ballPossession,
+      passInaccuracy: gamePlayConig.guestTeam.passInaccuracy,
+      passSpeed: gamePlayConig.guestTeam.passSpeed,
+      goalKeeerSpeed: gamePlayConig.guestTeam.goalKeeperSpeed,
+    });
+
+    this.match = new Match(this, yourTeam, oponentTeam, this.stadium);
   }
 
-  drawStadium() {
+  addStadium() {
     this.stadium = new Stadium(
       this,
-      this.screenWidth / 2,
-      this.screenHeight / 2,
-      1100,
-      600
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2,
+      screenSize().gamePlay.stadium.width,
+      screenSize().gamePlay.stadium.height
     );
   }
 }

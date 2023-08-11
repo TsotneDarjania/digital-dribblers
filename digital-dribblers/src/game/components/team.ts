@@ -1,24 +1,25 @@
-import { TeamData } from "../data/teamsData";
-import { Footballer } from "../gameObjects/footballler";
-import { GoalKeeper } from "../gameObjects/goalKeeper";
-import { GamePlay } from "../scenes/gamePlay";
-import { FootbollersColumn } from "./footballersColumn";
+import { calculatePercentage } from "../../helper/tatukaMath";
+import { Footballer } from "../characters/footballer";
+import { TeamData } from "../interfaces/teamData";
+import { FootballersLine } from "./footballersLine";
+import { Stadium } from "../gameObjects/stadium";
 
 export class Team extends Phaser.GameObjects.Container {
-  defenceColumn!: FootbollersColumn;
-  centerColumn!: FootbollersColumn;
-  offenceColumn!: FootbollersColumn;
+  defenders!: FootballersLine;
+  midfielders!: FootballersLine;
+  attackers!: FootballersLine;
 
-  allFootbalers: Array<Footballer> = [];
+  allFootballers: Array<Footballer> = [];
 
-  goalKeeper!: GoalKeeper;
+  goalKeeper!: Footballer;
 
-  columnMotionDistance!: number;
+  tween!: Phaser.Tweens.Tween;
 
   constructor(
-    public scene: GamePlay,
-    public teamData: TeamData,
-    public isGuest: boolean
+    public scene: Phaser.Scene,
+    public stadium: Stadium,
+    public isHost: boolean,
+    public teamData: TeamData
   ) {
     super(scene);
     scene.add.existing(this);
@@ -28,126 +29,109 @@ export class Team extends Phaser.GameObjects.Container {
 
   init() {
     this.addGoalKeeper();
-    this.addFootballers();
-    this.calculateColumnMotionDistance();
+
+    this.addDefenders();
+    this.addMidfielders();
+    this.addAttachers();
+
+    //collect all footballer
+    [
+      this.defenders.footballers,
+      this.midfielders.footballers,
+      this.attackers.footballers,
+    ].forEach((footballers) => {
+      this.allFootballers.push(...footballers);
+    });
   }
 
   addGoalKeeper() {
-    const stadiumLeft_x =
-      this.scene.stadium.x - this.scene.stadium.stadiumWidth / 2;
-    let posY;
-    this.isGuest
-      ? (posY = stadiumLeft_x + this.scene.stadium.stadiumWidth)
-      : (posY = stadiumLeft_x);
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(50, this.stadium.width)
+      : this.stadium.x + calculatePercentage(50, this.stadium.width);
 
-    this.goalKeeper = new GoalKeeper(this.scene, posY, this.scene.stadium.y, {
-      key: this.teamData.flag,
-      playerPosition: "goalKeeper",
-    });
+    this.goalKeeper = new Footballer(
+      this.scene,
+      x,
+      this.stadium.y,
+      calculatePercentage(0.09, this.stadium.width),
+      { key: this.teamData.key, position: "goalKeeper" }
+    );
 
-    this.add(this.goalKeeper);
-    this.allFootbalers.push(this.goalKeeper);
+    // this.add(this.goalKeeper);
   }
 
-  stopMotion() {
-    this.defenceColumn.stopMove();
-    this.centerColumn.stopMove();
-    this.offenceColumn.stopMove();
+  addDefenders() {
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(34, this.stadium.width)
+      : this.stadium.x + calculatePercentage(34, this.stadium.width);
+
+    this.defenders = new FootballersLine(
+      this.scene,
+      x,
+      this.stadium.y - this.stadium.height / 2,
+      this.stadium,
+      this.teamData.formation[0],
+      { key: this.teamData.key, position: "defender" }
+    );
+    this.add(this.defenders);
+  }
+
+  addMidfielders() {
+    const x = this.isHost
+      ? this.stadium.x - calculatePercentage(10, this.stadium.width)
+      : this.stadium.x + calculatePercentage(10, this.stadium.width);
+
+    this.midfielders = new FootballersLine(
+      this.scene,
+      x,
+      this.stadium.y - this.stadium.height / 2,
+      this.stadium,
+      this.teamData.formation[1],
+      { key: this.teamData.key, position: "midfielder" }
+    );
+    this.add(this.midfielders);
+  }
+
+  addAttachers() {
+    const x = this.isHost
+      ? this.stadium.x + calculatePercentage(25, this.stadium.width)
+      : this.stadium.x - calculatePercentage(25, this.stadium.width);
+
+    this.attackers = new FootballersLine(
+      this.scene,
+      x,
+      this.stadium.y - this.stadium.height / 2,
+      this.stadium,
+      this.teamData.formation[2],
+      { key: this.teamData.key, position: "attacker" }
+    );
+    this.add(this.attackers);
   }
 
   startMotion() {
-    this.defenceColumn.startMove(
-      2,
-      this.defenceColumn.y - this.columnMotionDistance,
-      this.defenceColumn.y + this.columnMotionDistance
-    );
-    this.centerColumn.startMove(
-      2,
-      this.centerColumn.y - this.columnMotionDistance,
-      this.centerColumn.y + this.columnMotionDistance
-    );
-    this.offenceColumn.startMove(
-      2,
-      this.offenceColumn.y - this.columnMotionDistance,
-      this.offenceColumn.y + this.columnMotionDistance
-    );
+    this.tween = this.scene.tweens.add({
+      targets: this,
+      y: {
+        from: -this.stadium.leftGoalPost.height / 2,
+        to: this.stadium.leftGoalPost.height / 2,
+      },
+      repeat: -1,
+      yoyo: true,
+      duration: this.teamData.motionDuration,
+    });
+    this.tween.seek(700);
   }
 
-  calculateColumnMotionDistance() {
-    let maxColumn = this.defenceColumn;
-    const allColumns = [
-      this.defenceColumn,
-      this.centerColumn,
-      this.offenceColumn,
-    ];
-
-    for (let i = 0; i < allColumns.length; i++) {
-      if (allColumns[i].getAll().length >= maxColumn.getAll().length) {
-        maxColumn = allColumns[i];
-        const padding =
-          this.scene.stadium.stadiumHeight /
-          (allColumns[i].footballersNumber + 1);
-        this.columnMotionDistance =
-          padding - allColumns[i].footballers[0].getBounds().height / 2;
-      }
-    }
+  stopMotion() {
+    if (this.tween === undefined) return;
+    this.tween.pause();
   }
 
-  addFootballers() {
-    if (this.isGuest) {
-      this.defenceColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[0],
-        85,
-        this.teamData.flag,
-        "defender"
-      );
-      this.centerColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[1],
-        60,
-        this.teamData.flag,
-        "center"
-      );
-      this.offenceColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[2],
-        25,
-        this.teamData.flag,
-        "forward"
-      );
+  resumeMotion() {
+    if (this.tween !== undefined) {
+      this.tween.resume();
     } else {
-      this.defenceColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[0],
-        15,
-        this.teamData.flag,
-        "defender"
-      );
-      this.centerColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[1],
-        40,
-        this.teamData.flag,
-        "center"
-      );
-      this.offenceColumn = new FootbollersColumn(
-        this.scene,
-        this.teamData.formation[2],
-        75,
-        this.teamData.flag,
-        "forward"
-      );
+      this.startMotion();
     }
-
-    this.defenceColumn.footballers.forEach((footbaler) => {
-      this.allFootbalers.push(footbaler);
-    });
-    this.centerColumn.footballers.forEach((footbaler) => {
-      this.allFootbalers.push(footbaler);
-    });
-    this.offenceColumn.footballers.forEach((footbaler) => {
-      this.allFootbalers.push(footbaler);
-    });
   }
 }

@@ -1,236 +1,188 @@
 import { calculatePercentage } from "../../helper/tatukaMath";
-import { GamePlay } from "../scenes/gamePlay";
+import { GoalPost } from "./goalPost";
 
 export class Stadium extends Phaser.GameObjects.Layer {
-  lineColor = 0xf0fcf8;
+  graphics!: Phaser.GameObjects.Graphics;
+
+  //pharametres
   lineWidth = 3;
+  lineColor = 0xfcf4ed;
 
-  screenWidth!: number;
-  screenHeight!: number;
+  //borders
+  topBorder!: Phaser.GameObjects.Image;
+  bottomBorder!: Phaser.GameObjects.Image;
+  leftTopBorder!: Phaser.GameObjects.Image;
+  leftBottomBorder!: Phaser.GameObjects.Image;
+  rightTopBorder!: Phaser.GameObjects.Image;
+  rightBottomBorder!: Phaser.GameObjects.Image;
 
-  leftGoalCollider!: Phaser.GameObjects.Rectangle;
-  rightGoalCollider!: Phaser.GameObjects.Rectangle;
-
-  leftPoles!: Phaser.GameObjects.Group;
-  rightPoles!: Phaser.GameObjects.Group;
+  leftGoalPost!: GoalPost;
+  rightGoalPost!: GoalPost;
 
   constructor(
-    public scene: GamePlay,
+    scene: Phaser.Scene,
     public x: number,
     public y: number,
-    public stadiumWidth: number,
-    public stadiumHeight: number
+    public width: number,
+    public height: number
   ) {
     super(scene);
+    scene.add.existing(this);
 
     this.init();
   }
 
   init() {
-    this.screenWidth = this.scene.game.canvas.width;
-    this.screenHeight = this.scene.game.canvas.height;
+    this.graphics = this.scene.add.graphics();
+    this.graphics.fillStyle(this.lineColor, 1);
+    this.graphics.lineStyle(this.lineWidth, this.lineColor, 1);
+    this.graphics.setAlpha(0.5);
 
-    this.leftPoles = this.scene.add.group();
-    this.rightPoles = this.scene.add.group();
+    this.addBorders();
+    this.addLeftGoalPost();
+    this.addRightGoalPost();
 
-    this.addMiddleLine();
-    this.addCenterCircle();
-    this.addOutLines();
-
-    this.addLeftGoalLine();
-    this.addRightGoalLine();
-
-    this.addRightPenaltyArea();
-    this.addLeftPenaltyArea();
-
-    this.addCenterInsideCircle();
+    this.addGrass();
+    this.addVisualLines();
   }
 
-  addCenterInsideCircle() {
-    const graphics = this.scene.add.graphics();
-    graphics.fillStyle(this.lineColor, 1);
-    graphics.fillCircle(
+  addGrass() {
+    this.graphics.setAlpha(1);
+    this.graphics.fillStyle(0x00b35f, 1);
+    this.graphics.fillRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
+
+    this.graphics.fillStyle(0x88d189, 1);
+    this.graphics.fillRect(
+      this.leftGoalPost.goalLine.x - this.leftGoalPost.leftLine.displayWidth,
+      this.y - this.leftGoalPost.goalLine.displayHeight / 2,
+      this.leftGoalPost.leftLine.displayWidth,
+      this.leftGoalPost.goalLine.displayHeight
+    );
+    this.graphics.fillRect(
+      this.rightGoalPost.goalLine.x,
+      this.y - this.leftGoalPost.goalLine.displayHeight / 2,
+      this.leftGoalPost.leftLine.displayWidth,
+      this.leftGoalPost.goalLine.displayHeight
+    );
+
+    this.graphics.fillStyle(0xfbf9f3, 1);
+    //center small Circle
+    this.graphics.fillCircle(
       this.x,
       this.y,
-      calculatePercentage(0.7, this.stadiumWidth)
+      calculatePercentage(1.2, this.height)
     );
   }
 
-  addLeftPenaltyArea() {
-    const width = calculatePercentage(7, this.stadiumWidth);
-    const height = calculatePercentage(40, this.stadiumHeight);
+  addBorders() {
+    //top border
+    this.topBorder = this.scene.physics.add
+      .image(this.x, this.y - this.height / 2, "default")
+      .setDisplaySize(this.width, this.lineWidth)
+      .setImmovable(true);
 
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(this.lineWidth, this.lineColor, 0.4);
-    graphics.strokeRect(
-      this.x - this.stadiumWidth / 2,
-      this.y - height / 2,
-      width,
-      height
-    );
+    //bottom border
+    this.bottomBorder = this.scene.physics.add
+      .image(this.x, this.y + this.height / 2, "default")
+      .setDisplaySize(this.width, this.lineWidth)
+      .setImmovable(true);
 
-    graphics.fillStyle(this.lineColor, 1);
-    graphics.fillCircle(
-      this.x -
-        this.stadiumWidth / 2 +
-        width +
-        calculatePercentage(3.5, this.stadiumWidth),
+    this.leftTopBorder = this.scene.physics.add
+      .image(this.x - this.width / 2, this.y - this.height / 2, "default")
+      .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
+      .setOrigin(0.5, 0)
+      .setImmovable(true);
+
+    this.leftBottomBorder = this.scene.physics.add
+      .image(this.x - this.width / 2, this.y + this.height / 2, "default")
+      .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
+      .setOrigin(0.5, 1)
+      .setImmovable(true);
+
+    this.rightTopBorder = this.scene.physics.add
+      .image(this.x + this.width / 2, this.y - this.height / 2, "default")
+      .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
+      .setOrigin(0.5, 0)
+      .setImmovable(true);
+
+    this.rightBottomBorder = this.scene.physics.add
+      .image(this.x + this.width / 2, this.y + this.height / 2, "default")
+      .setDisplaySize(this.lineWidth, calculatePercentage(35, this.height))
+      .setOrigin(0.5, 1)
+      .setImmovable(true);
+  }
+
+  addLeftGoalPost() {
+    this.leftGoalPost = new GoalPost(
+      this.scene,
+      this.x - this.width / 2,
       this.y,
-      5
-    );
-
-    graphics.strokeRect(
-      this.x - this.stadiumWidth / 2,
-      this.y - calculatePercentage(150, height) / 2,
-      calculatePercentage(200, width),
-      calculatePercentage(150, height)
+      this,
+      "fromLeft"
     );
   }
 
-  addRightPenaltyArea() {
-    const width = calculatePercentage(7, this.stadiumWidth);
-    const height = calculatePercentage(40, this.stadiumHeight);
-
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(this.lineWidth, this.lineColor, 0.4);
-    graphics.strokeRect(
-      this.x + this.stadiumWidth / 2 - width,
-      this.y - height / 2,
-      width,
-      height
-    );
-
-    graphics.fillStyle(this.lineColor, 1);
-    graphics.fillCircle(
-      this.x +
-        this.stadiumWidth / 2 -
-        width -
-        calculatePercentage(3.5, this.stadiumWidth),
+  addRightGoalPost() {
+    this.rightGoalPost = new GoalPost(
+      this.scene,
+      this.x + this.width / 2,
       this.y,
-      5
-    );
-
-    graphics.strokeRect(
-      this.x + this.stadiumWidth / 2 - calculatePercentage(200, width),
-      this.y - calculatePercentage(150, height) / 2,
-      calculatePercentage(200, width),
-      calculatePercentage(150, height)
+      this,
+      "fromRight"
     );
   }
 
-  addLeftGoalLine() {
-    const width = calculatePercentage(5, this.stadiumWidth);
-    const height = calculatePercentage(30, this.stadiumHeight);
-
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(this.lineWidth, this.lineColor, 1);
-    graphics.strokeRect(
-      this.x - this.stadiumWidth / 2 - width,
-      this.y - height / 2,
-      width,
-      height
+  addVisualLines() {
+    //goal keeper short line left
+    this.graphics.strokeRect(
+      this.x - this.width / 2,
+      this.y - calculatePercentage(18, this.height),
+      calculatePercentage(8, this.width),
+      calculatePercentage(36, this.height)
     );
 
-    const leftPole = this.scene.add.rectangle(
-      this.x - this.stadiumWidth / 2 - width / 2,
-      this.y - height / 2,
-      width,
-      10
-    );
-    this.scene.physics.add.existing(leftPole, true);
-
-    const rightPole = this.scene.add.rectangle(
-      this.x - this.stadiumWidth / 2 - width / 2,
-      this.y + height / 2,
-      width,
-      10
+    //goal keeper long line left
+    this.graphics.strokeRect(
+      this.x - this.width / 2,
+      this.y - calculatePercentage(25, this.height),
+      calculatePercentage(13, this.width),
+      calculatePercentage(50, this.height)
     );
 
-    this.scene.physics.add.existing(rightPole, true);
-
-    this.leftPoles.add(rightPole);
-    this.leftPoles.add(leftPole);
-
-    this.leftGoalCollider = this.scene.add.rectangle(
-      this.x - this.stadiumWidth / 2 - width - calculatePercentage(55, width),
-      this.y,
-      100,
-      height
-    );
-    this.scene.physics.add.existing(this.leftGoalCollider, true);
-  }
-
-  addRightGoalLine() {
-    const width = calculatePercentage(5, this.stadiumWidth);
-    const height = calculatePercentage(30, this.stadiumHeight);
-
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(this.lineWidth, this.lineColor, 1);
-    graphics.strokeRect(
-      this.x + this.stadiumWidth / 2,
-      this.y - height / 2,
-      width,
-      height
+    //goal keeper short line right
+    this.graphics.strokeRect(
+      this.x + this.width / 2 - calculatePercentage(8, this.width),
+      this.y - calculatePercentage(18, this.height),
+      calculatePercentage(8, this.width),
+      calculatePercentage(36, this.height)
     );
 
-    const leftPole = this.scene.add.rectangle(
-      this.x + this.stadiumWidth / 2 + width / 2,
-      this.y - height / 2,
-      width,
-      10
-    );
-    this.scene.physics.add.existing(leftPole, true);
-
-    const rightPole = this.scene.add.rectangle(
-      this.x + this.stadiumWidth / 2 + width / 2,
-      this.y + height / 2,
-      width,
-      10
+    //goal keeper long line right
+    this.graphics.strokeRect(
+      this.x + this.width / 2 - calculatePercentage(13, this.width),
+      this.y - calculatePercentage(25, this.height),
+      calculatePercentage(13, this.width),
+      calculatePercentage(50, this.height)
     );
 
-    this.scene.physics.add.existing(rightPole, true);
-
-    this.rightPoles.add(rightPole);
-    this.rightPoles.add(leftPole);
-
-    this.rightGoalCollider = this.scene.add.rectangle(
-      this.x + this.stadiumWidth / 2 + width + calculatePercentage(55, width),
-      this.y,
-      100,
-      height
+    //center Line
+    this.graphics.strokeRect(
+      this.x,
+      this.y - this.height / 2,
+      calculatePercentage(10, this.lineWidth),
+      this.height
     );
-    this.scene.physics.add.existing(this.rightGoalCollider, true);
-  }
 
-  addCenterCircle() {
-    const graphics = this.scene.add.graphics();
-
-    graphics.lineStyle(this.lineWidth, this.lineColor, 1);
-    graphics.strokeCircle(
+    //center big Circle
+    this.graphics.strokeCircle(
       this.x,
       this.y,
-      calculatePercentage(6, this.stadiumWidth)
+      calculatePercentage(13, this.height)
     );
-  }
-
-  addOutLines() {
-    const graphics = this.scene.add.graphics();
-    graphics.lineStyle(this.lineWidth, this.lineColor, 1);
-
-    graphics.strokeRect(
-      this.x - this.stadiumWidth / 2,
-      this.y - this.stadiumHeight / 2,
-      this.stadiumWidth,
-      this.stadiumHeight
-    );
-  }
-
-  addMiddleLine() {
-    const graphics = this.scene.add.graphics();
-
-    graphics.lineStyle(this.lineWidth, this.lineColor, 1);
-    graphics.moveTo(this.x, this.y - this.stadiumHeight / 2);
-    graphics.lineTo(this.x, this.y + this.stadiumHeight / 2);
-    graphics.strokePath();
   }
 }

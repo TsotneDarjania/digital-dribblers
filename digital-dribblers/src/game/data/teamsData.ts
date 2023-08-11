@@ -1,23 +1,62 @@
-export const teamsData = {
-  nations: {
-    georgia: {
-      flagKey: "georgia-flag",
-      footballers: {},
-    },
+export const TeamsData = [
+  {
+    name: "arsenal",
   },
-  teams: {},
-};
-
-export interface TeamsData {
-  nations: {
-    gecleorgia: {
-      flagKey: string;
-      footballers: {};
-    };
-  };
-}
-
-export interface TeamData {
-  formation: Array<number>;
-  flag: string;
-}
+  {
+    name: "aston-villa",
+  },
+  {
+    name: "bournemouth",
+  },
+  {
+    name: "brentford",
+  },
+  {
+    name: "brighton",
+  },
+  {
+    name: "burnley",
+  },
+  {
+    name: "chelsea",
+  },
+  {
+    name: "crystal-palace",
+  },
+  {
+    name: "everton",
+  },
+  {
+    name: "fulham",
+  },
+  {
+    name: "liverpool",
+  },
+  {
+    name: "luton",
+  },
+  {
+    name: "manchester-city",
+  },
+  {
+    name: "manchester-united",
+  },
+  {
+    name: "new-castle",
+  },
+  {
+    name: "nottingham",
+  },
+  {
+    name: "sheffield",
+  },
+  {
+    name: "tottenham",
+  },
+  {
+    name: "west-ham",
+  },
+  {
+    name: "wolves",
+  },
+];
