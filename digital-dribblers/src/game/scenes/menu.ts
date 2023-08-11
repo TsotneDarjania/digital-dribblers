@@ -57,7 +57,9 @@ export class Menu extends Phaser.Scene {
         vsText.setVisible(false);
 
         if (this.scale.isFullscreen === false) {
-          this.scale.startFullscreen();
+          if (window.innerWidth < 900) {
+            this.scale.startFullscreen();
+          }
         }
       });
 
@@ -133,7 +135,9 @@ export class Menu extends Phaser.Scene {
           : this.yourTeamsOptions.setVisible(true);
 
         if (this.scale.isFullscreen === false) {
-          this.scale.startFullscreen();
+          if (window.innerWidth < 900) {
+            this.scale.startFullscreen();
+          }
         }
       });
 
