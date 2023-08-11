@@ -1,5 +1,4 @@
-//@ts-ignore
-import WebFontFile from "../helper/webfontloader";
+import { WebFontFile } from "../helper/webFontLoader"; // Adjust the path accordingly
 
 export class Preload extends Phaser.Scene {
   constructor() {
