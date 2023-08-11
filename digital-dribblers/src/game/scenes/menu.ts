@@ -194,7 +194,9 @@ export class Menu extends Phaser.Scene {
 
     window.onresize = () => {
       setTimeout(() => {
-        this.scene.restart();
+        if (this.scale.isFullscreen === false) {
+          this.scene.restart();
+        }
       }, 2000);
     };
   }
