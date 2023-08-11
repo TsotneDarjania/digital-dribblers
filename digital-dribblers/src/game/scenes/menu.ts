@@ -171,7 +171,9 @@ export class Menu extends Phaser.Scene {
           : this.oponentTeamsOptions.setVisible(true);
 
         if (this.scale.isFullscreen === false) {
-          this.scale.startFullscreen();
+          if (window.innerWidth < 900) {
+            this.scale.startFullscreen();
+          }
         }
       });
 
